@@ -1,0 +1,57 @@
+[project]
+name = "uv-dynamic-versioning"
+dynamic = ["version"]
+description = "Dynamic versisoning based on VCS tags for uv/hatch project"
+readme = "README.md"
+requires-python = ">=3.10"
+license = { file = "LICENSE" }
+keywords = ["uv", "hatch"]
+classifiers = [
+  "License :: OSI Approved :: MIT License",
+  "Programming Language :: Python",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Framework :: Hatch",
+]
+dependencies = [
+    "dunamai>=1.22.0",
+    "hatchling>=1.25.0",
+    "pydantic>=2.8.2",
+    "returns>=0.23.0",
+    "tomlkit>=0.13.2",
+]
+
+[project.entry-points.hatch]
+uv-dynamic-versioning = "uv_dynamic_versioning.hooks"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.version]
+path = "src/uv_dynamic_versioning/__init__.py"
+
+[tool.uv]
+dev-dependencies = [
+    "gitpython>=3.1.43",
+    "pre-commit>=3.8.0",
+    "pytest>=8.3.2",
+    "pytest-pretty>=1.2.0",
+    "pytest-randomly>=3.15.0",
+]
+
+[tool.ruff.lint]
+select = [
+  "B",   # flake8-bugbear
+  "C",   # flake8-comprehensions
+  "E",   # pycodestyle errors
+  "F",   # pyflakes
+  "I",   # isort
+  "N",   # pep8-naming
+  "RET", # flake8-return
+  "RUF", # Ruff-specific rules
+  "SIM", # flake8-simplify
+  "T20", # flake8-print
+  "W",   # pycodestyle warnings
+]
