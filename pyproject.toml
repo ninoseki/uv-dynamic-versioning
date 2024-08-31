@@ -1,7 +1,7 @@
 [project]
 name = "uv-dynamic-versioning"
 dynamic = ["version"]
-description = "Dynamic versisoning based on VCS tags for uv/hatch project"
+description = "Dynamic versioning based on VCS tags for uv/hatch project"
 readme = "README.md"
 requires-python = ">=3.10"
 license = { file = "LICENSE" }
