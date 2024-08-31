@@ -4,10 +4,6 @@
 
 ## Installation
 
-```bash
-uv add uv-dynamic-versioning
-```
-
 Update or add `build-system` and `tool.hatch.version` in your `pyproject.toml` to use `uv-dynamic-versioning`.
 
 ```toml
