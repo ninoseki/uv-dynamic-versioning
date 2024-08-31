@@ -62,4 +62,3 @@ def test_with_bump(repo: Repo, semver_tag: TagReference):
             assert version.startswith("1.0.1.")
     finally:
         repo.git.execute(["git", "reset", "--soft", "HEAD~1"])
-        repo.git.execute(["git", "reset", "--soft", "HEAD~1"])
