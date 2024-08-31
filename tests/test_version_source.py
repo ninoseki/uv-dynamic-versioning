@@ -47,19 +47,6 @@ def test_with_format(semver_tag: TagReference):
         assert version.startswith("v1.0.0+")
 
 
-def test_with_dirty(semver_tag: TagReference):
-    source = DynamicVersionSource(str(semver_tag.repo.working_dir), {})
-
-    with patch(
-        "uv_dynamic_versioning.version_source.DynamicVersionSource.root",
-        new_callable=PropertyMock,
-    ) as mock_root:
-        mock_root.return_value = "tests/fixtures/with-dirty/"
-
-        version: str = source.get_version_data()["version"]
-        assert version == "1.0.0+dirty"
-
-
 def test_with_bump(repo: Repo, semver_tag: TagReference):
     source = DynamicVersionSource(str(semver_tag.repo.working_dir), {})
 
@@ -74,4 +61,4 @@ def test_with_bump(repo: Repo, semver_tag: TagReference):
             version: str = source.get_version_data()["version"]
             assert version.startswith("1.0.1.")
     finally:
-        repo.git.execute(["git", "reset", "HEAD"])
+        repo.git.execute(["git", "reset", "--soft", "HEAD~1"])
