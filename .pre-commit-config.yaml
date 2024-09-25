@@ -11,12 +11,12 @@ repos:
       - id: trailing-whitespace
 
   - repo: https://github.com/astral-sh/uv-pre-commit
-    rev: 0.4.0
+    rev: 0.4.16
     hooks:
       - id: uv-lock
 
   - repo: https://github.com/ninoseki/uv-sort
-    rev: v0.1.0
+    rev: v0.3.0
     hooks:
       - id: uv-sort
 
@@ -25,10 +25,10 @@ repos:
     hooks:
       - id: pyupgrade
         args:
-          - --py310-plus
+          - --py39-plus
 
   - repo: https://github.com/charliermarsh/ruff-pre-commit
-    rev: v0.6.3
+    rev: v0.6.7
     hooks:
       - id: ruff
         args:
