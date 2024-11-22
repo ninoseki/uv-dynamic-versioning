@@ -64,7 +64,7 @@ In your `pyproject.toml`, you may configure the following options:
     This is ignored when `format` or `format-jinja` is used.
   - `pattern` (string):
     This is a regular expression which will be used to find a tag representing a version.
-    When this is unset, Dunamai's default pattern is used.
+    When this is unset, Dunamai's default-unprefixed pattern is used.
 
     There must be a capture group named `base` with the main part of the version.
     Optionally, it may contain another two groups named `stage` and `revision` for prereleases,
