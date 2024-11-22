@@ -16,11 +16,12 @@ classifiers = [
   "Framework :: Hatch",
 ]
 dependencies = [
-  "dunamai~=1.22.0",
-  "hatchling~=1.25.0",
-  "pydantic~=2.9.1",
-  "returns~=0.23.0",
-  "tomlkit~=0.13.2",
+  "dunamai~=1.23",
+  "eval-type-backport~=0.2;python_version<'3.10'",
+  "hatchling~=1.26",
+  "pydantic~=2.10",
+  "returns~=0.23",
+  "tomlkit~=0.13",
 ]
 
 [project.urls]
@@ -36,14 +37,15 @@ build-backend = "hatchling.build"
 [tool.hatch.version]
 path = "src/uv_dynamic_versioning/__init__.py"
 
-[tool.uv]
-dev-dependencies = [
+[dependency-groups]
+dev = [
   "gitpython~=3.1.43",
-  "pre-commit~=3.8.0",
-  "pytest~=8.3.2",
+  "pre-commit~=4.0.1",
+  "pytest~=8.3.3",
   "pytest-pretty~=1.2.0",
-  "pytest-randomly~=3.15.0",
+  "pytest-randomly~=3.16.0",
 ]
+
 
 [tool.ruff.lint]
 select = [
@@ -51,11 +53,13 @@ select = [
   "C",   # flake8-comprehensions
   "E",   # pycodestyle errors
   "F",   # pyflakes
+  "FA",  # flake8-future-annotations
   "I",   # isort
   "N",   # pep8-naming
   "RET", # flake8-return
   "RUF", # Ruff-specific rules
   "SIM", # flake8-simplify
   "T20", # flake8-print
+  "UP",  # pyupgrade
   "W",   # pycodestyle warnings
 ]
