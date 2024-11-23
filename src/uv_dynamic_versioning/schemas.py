@@ -9,7 +9,7 @@ class UvDynamicVersioning(BaseModel):
     metadata: bool | None = None
     tagged_metadata: bool = Field(default=False, alias="tagged-metadata")
     dirty: bool = False
-    pattern: Pattern = Pattern.DefaultUnprefixed
+    pattern: Pattern = Pattern.Default
     pattern_prefix: str | None = Field(default=None, alias="pattern-prefix")
     format: str | None = None
     style: Style | None = None
