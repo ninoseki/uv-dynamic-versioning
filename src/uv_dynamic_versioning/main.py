@@ -1,3 +1,4 @@
+import os
 from pathlib import Path
 
 import tomlkit
@@ -25,6 +26,9 @@ def validate(project: tomlkit.TOMLDocument):
 
 @safe
 def get_version(config: schemas.UvDynamicVersioning) -> str:
+    if "UV_DYNAMIC_VERSIONING_BYPASS" in os.environ:
+        return os.environ["UV_DYNAMIC_VERSIONING_BYPASS"]
+
     version = Version.from_vcs(
         config.vcs,
         latest_tag=config.latest_tag,
@@ -36,6 +40,7 @@ def get_version(config: schemas.UvDynamicVersioning) -> str:
         pattern=config.pattern,
         pattern_prefix=config.pattern_prefix,
     )
+
     return version.serialize(
         metadata=config.metadata,
         style=config.style,
