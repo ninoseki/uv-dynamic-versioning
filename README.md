@@ -154,7 +154,7 @@ style = "semver"
 In addition to the project-specific configuration above,
 you can apply some global overrides via environment variables.
 
-* `POETRY_DYNAMIC_VERSIONING_BYPASS`:
+* `UV_DYNAMIC_VERSIONING_BYPASS`:
   Use this to bypass the VCS mechanisms and use a static version instead.
   The value of the environment variable will be used as the version
   for the active project and any path/SSH dependencies that also use the plugin.
