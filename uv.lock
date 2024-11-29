@@ -520,7 +520,7 @@ wheels = [
 
 [[package]]
 name = "uv-dynamic-versioning"
-version = "0.2.0"
+version = "0.0.0.post14.dev0+3941908"
 source = { editable = "." }
 dependencies = [
     { name = "dunamai" },
