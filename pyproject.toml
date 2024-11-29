@@ -31,11 +31,11 @@ Repository = "https://github.com/ninoseki/uv-dynamic-versioning"
 uv-dynamic-versioning = "uv_dynamic_versioning.hooks"
 
 [build-system]
-requires = ["hatchling"]
+requires = ["hatchling", "uv-dynamic-versioning"]
 build-backend = "hatchling.build"
 
 [tool.hatch.version]
-path = "src/uv_dynamic_versioning/__init__.py"
+source = "uv-dynamic-versioning"
 
 [dependency-groups]
 dev = [
