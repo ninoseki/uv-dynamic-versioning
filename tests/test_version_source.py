@@ -1,24 +1,8 @@
-from pathlib import Path
 from unittest.mock import PropertyMock, patch
 
-import pytest
 from git import Repo, TagReference
 
 from uv_dynamic_versioning.version_source import DynamicVersionSource
-
-PROJECT_ROOT = Path().resolve()
-
-
-@pytest.fixture
-def repo():
-    return Repo.init(PROJECT_ROOT)
-
-
-@pytest.fixture
-def semver_tag(repo: Repo):
-    tag = repo.create_tag("v1.0.0")
-    yield tag
-    repo.delete_tag(tag)
 
 
 def test_with_semver(semver_tag: TagReference):

@@ -21,6 +21,7 @@ dependencies = [
   "hatchling~=1.26",
   "pydantic~=2.10",
   "returns~=0.23",
+  "setuptools-scm~=8.0",
   "tomlkit~=0.13",
 ]
 
@@ -64,4 +65,7 @@ select = [
   "T20", # flake8-print
   "UP",  # pyupgrade
   "W",   # pycodestyle warnings
+]
+ignore = [
+  "E501", # line too long
 ]

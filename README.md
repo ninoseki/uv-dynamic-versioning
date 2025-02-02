@@ -33,7 +33,18 @@ name = "..."
 dynamic = ["version"]
 ```
 
-## Configuration
+See [Version Source](#version-source) and [Build Hook](#build-hook) for more details.
+
+## Version Source
+
+`uv-dynamic-versioning` version source allows you to set a version based on VCS.
+
+```toml
+[tool.hatch.version]
+source = "uv-dynamic-versioning"
+```
+
+### Configuration
 
 > [!NOTE]
 >
@@ -150,17 +161,56 @@ vcs = "git"
 style = "semver"
 ```
 
-## Environment variables
+### Environment variables
 
-In addition to the project-specific configuration above,
-you can apply some global overrides via environment variables.
+In addition to the project-specific configuration above, you can apply some global overrides via environment variables.
 
 - `UV_DYNAMIC_VERSIONING_BYPASS`:
   Use this to bypass the VCS mechanisms and use a static version instead.
-  The value of the environment variable will be used as the version
-  for the active project and any path/SSH dependencies that also use the plugin.
-  This is mainly for distro package maintainers who need to patch existing releases,
-  without needing access to the original repository.
+  The value of the environment variable will be used as the version for the active project and any path/SSH dependencies that also use the plugin.
+  This is mainly for distro package maintainers who need to patch existing releases, without needing access to the original repository.
+
+## Build Hook
+
+`uv-dynamic-versioning` hook allows a version file to be generated when building a project.
+
+```toml
+[tool.hatch.build.hooks.uv-dynamic-versioning]
+version-file = "_version.py"
+```
+
+### Configuration
+
+- `version-file` (string, default: unset):
+  This is a relative path to a file that gets updated with the current version.
+- `template` (string, [default](https://github.com/pypa/setuptools-scm/blob/v6.4.0/src/setuptools_scm/__init__.py#L30-L39)):
+  This is a template used for overwriting `version-file`.
+
+## Exposing Dynamic Version (`__version__`)
+
+There are two ways to expose dynamically generated `__version__`.
+
+The first one is using the build hook above.
+
+The second one is using [importlib.metadata](https://docs.python.org/3/library/importlib.metadata.html).
+
+```py
+# __init__.py
+import importlib.metadata
+
+__version__ = importlib.metadata.version(__name__)
+```
+
+The second trick may fail if a package is installed in editable mode. Setting a fallback for `importlib.metadata.PackageNotFoundError` may be a workaround.
+
+```py
+import importlib.metadata
+
+try:
+    __version__ = importlib.metadata.version(__name__)
+except importlib.metadata.PackageNotFoundError:
+    __version__ = "0.0.0"
+```
 
 ## Alternatives
 
