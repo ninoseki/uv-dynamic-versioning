@@ -1,0 +1,14 @@
+[project]
+name = "example"
+dynamic = ["version"]
+description = "An example project for uv-dynamic-versioning"
+readme = "README.md"
+requires-python = ">=3.9"
+dependencies = []
+
+[build-system]
+requires = ["hatchling", "uv-dynamic-versioning"]
+build-backend = "hatchling.build"
+
+[tool.hatch.version]
+source = "uv-dynamic-versioning"
