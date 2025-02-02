@@ -34,6 +34,7 @@ dynamic = ["version"]
 ```
 
 See [Version Source](#version-source) and [Build Hook](#build-hook) for more details.
+Also [there is an example project](./example/) demonstrates how to use `uv-dynamic-versioning`.
 
 ## Version Source
 
