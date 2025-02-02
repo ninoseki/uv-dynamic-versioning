@@ -25,7 +25,8 @@ dependencies = [
 ]
 
 [project.urls]
-Repository = "https://github.com/ninoseki/uv-dynamic-versioning"
+Repository = "https://github.com/ninoseki/uv-dynamic-versioning/"
+Homepage = "https://github.com/ninoseki/uv-dynamic-versioning/"
 
 [project.entry-points.hatch]
 uv-dynamic-versioning = "uv_dynamic_versioning.hooks"
