@@ -195,6 +195,10 @@ The first one is using the build hook above.
 
 The second one is using [importlib.metadata](https://docs.python.org/3/library/importlib.metadata.html).
 
+> [!NOTE]
+> This is very handy, but it's known that `importlib.metadata` is relatively slow.
+> Don't use this method when performance is critical.
+
 ```py
 # __init__.py
 import importlib.metadata
