@@ -12,3 +12,9 @@ build-backend = "hatchling.build"
 
 [tool.hatch.version]
 source = "uv-dynamic-versioning"
+
+[tool.hatch.build.hooks.version]
+path = "src/example/_version.py"
+template = '''
+version = "{version}"
+'''

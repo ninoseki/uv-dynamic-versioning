@@ -21,7 +21,6 @@ dependencies = [
   "hatchling~=1.26",
   "pydantic~=2.10",
   "returns~=0.23",
-  "setuptools-scm~=8.0",
   "tomlkit~=0.13",
 ]
 
@@ -48,7 +47,6 @@ dev = [
   "pytest-pretty~=1.2.0",
   "pytest-randomly~=3.16.0",
 ]
-
 
 [tool.ruff.lint]
 select = [
