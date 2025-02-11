@@ -33,7 +33,7 @@ name = "..."
 dynamic = ["version"]
 ```
 
-See [Version Source](#version-source) and [Build Hook](#build-hook) for more details.
+See [Version Source](#version-source) for more details.
 Also [there is an example project](./example/) demonstrates how to use `uv-dynamic-versioning`.
 
 ## Version Source
@@ -171,29 +171,11 @@ In addition to the project-specific configuration above, you can apply some glob
   The value of the environment variable will be used as the version for the active project and any path/SSH dependencies that also use the plugin.
   This is mainly for distro package maintainers who need to patch existing releases, without needing access to the original repository.
 
-## Build Hook
+## `__version__` Attribute
 
-`uv-dynamic-versioning` hook allows a version file to be generated when building a project.
+You may want to set `__version__` attribute in your library. There are two ways for that. Using [importlib.metadata](https://docs.python.org/3/library/importlib.metadata.html) and using [version build hook](https://hatch.pypa.io/1.9/plugins/build-hook/version/).
 
-```toml
-[tool.hatch.build.hooks.uv-dynamic-versioning]
-version-file = "_version.py"
-```
-
-### Configuration
-
-- `version-file` (string, default: unset):
-  This is a relative path to a file that gets updated with the current version.
-- `template` (string, [default](https://github.com/pypa/setuptools-scm/blob/v6.4.0/src/setuptools_scm/__init__.py#L30-L39)):
-  This is a template used for overwriting `version-file`.
-
-## Exposing Dynamic Version (`__version__`)
-
-There are two ways to expose dynamically generated `__version__`.
-
-The first one is using the build hook above.
-
-The second one is using [importlib.metadata](https://docs.python.org/3/library/importlib.metadata.html).
+### `importlib.metadata`
 
 > [!NOTE]
 > This is very handy, but it's known that `importlib.metadata` is relatively slow.
@@ -206,7 +188,7 @@ import importlib.metadata
 __version__ = importlib.metadata.version(__name__)
 ```
 
-The second trick may fail if a package is installed in editable mode. Setting a fallback for `importlib.metadata.PackageNotFoundError` may be a workaround.
+This trick may fail if a package is installed in [development mode](https://setuptools.pypa.io/en/latest/userguide/development_mode.html). Setting a fallback for `importlib.metadata.PackageNotFoundError` may be a good workaround.
 
 ```py
 import importlib.metadata
@@ -216,6 +198,29 @@ try:
 except importlib.metadata.PackageNotFoundError:
     __version__ = "0.0.0"
 ```
+
+### Version Build Hook
+
+You can write a version to a file when you run a build by using Hatch's official [version build hook](https://hatch.pypa.io/1.9/plugins/build-hook/version/).
+
+For example:
+
+```toml
+[tool.hatch.build.hooks.version]
+path = "path/to/_version.py"
+template = '''
+version = "{version}"
+'''
+```
+
+> [!NOTE]
+> A version file should not be included in VCS. It's better to ignore it in `.gitignore`.
+>
+> **.gitignore**
+>
+> ```text
+> path/to/_version.py
+> ```
 
 ## Alternatives
 
