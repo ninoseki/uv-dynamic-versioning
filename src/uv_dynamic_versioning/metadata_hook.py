@@ -5,10 +5,9 @@ from functools import cached_property
 from hatchling.metadata.plugin.interface import MetadataHookInterface
 from jinja2 import Environment
 from packaging.version import Version
-from returns.pipeline import flow
 
 from . import schemas
-from .main import get_version, parse, read, validate
+from .base import BasePlugin
 
 
 def render_template(s: str, *, env: Environment, version: Version):
@@ -16,20 +15,12 @@ def render_template(s: str, *, env: Environment, version: Version):
     return template.render(version=version)
 
 
-class DependenciesMetadataHook(MetadataHookInterface):
+class DependenciesMetadataHook(BasePlugin, MetadataHookInterface):
     """
     Hatch metadata hook to populate `project.dependencies` and `project.optional-dependencies`
     """
 
     PLUGIN_NAME = "uv-dynamic-versioning"
-
-    @cached_property
-    def project(self) -> schemas.Project:
-        return flow(read(self.root), parse, validate)
-
-    @property
-    def project_config(self) -> schemas.UvDynamicVersioning:
-        return self.project.tool.uv_dynamic_versioning or schemas.UvDynamicVersioning()
 
     @cached_property
     def plugin_config(self) -> schemas.MetadataHookConfig:
@@ -66,7 +57,7 @@ class DependenciesMetadataHook(MetadataHookInterface):
             )
 
         env = Environment()
-        _version = get_version(self.project_config)
+        _version = self.get_version()
         version = Version(_version)
 
         if self.plugin_config.dependencies:
