@@ -23,5 +23,5 @@ def set_uv_dynamic_versioning_bypass(version: str):
 
 @pytest.mark.usefixtures("set_uv_dynamic_versioning_bypass")
 def test_get_version(version: str):
-    got = get_version(schemas.UvDynamicVersioning()).unwrap()
+    got = get_version(schemas.UvDynamicVersioning())
     assert got == version

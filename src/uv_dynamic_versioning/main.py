@@ -3,28 +3,23 @@ from pathlib import Path
 
 import tomlkit
 from dunamai import Version
-from returns.result import safe
 
 from . import schemas
 
 
-@safe
 def read(root: str):
     pyproject = Path(root) / "pyproject.toml"
     return pyproject.read_text()
 
 
-@safe
 def parse(text: str):
     return tomlkit.parse(text)
 
 
-@safe
 def validate(project: tomlkit.TOMLDocument):
     return schemas.Project.model_validate(project.unwrap())
 
 
-@safe
 def get_version(config: schemas.UvDynamicVersioning) -> str:
     if "UV_DYNAMIC_VERSIONING_BYPASS" in os.environ:
         return os.environ["UV_DYNAMIC_VERSIONING_BYPASS"]
