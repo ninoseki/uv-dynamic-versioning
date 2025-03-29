@@ -10,12 +10,9 @@ Add `tool.hatch.metadata.hooks.uv-dynamic-versioning` in your `pyproject.toml` t
 ```toml
 [tool.hatch.metadata.hooks.uv-dynamic-versioning]
 dependencies = ["foo=={{ version }}"]
-optional-dependencies = {
-  "bar": ["baz=={{ version }}"]
-}
 ```
 
-Also remove `dependencies` and `optional-dependencies` in `project` and set them in `dynamic` (`dynamic = ["dependencies", "optional-dependencies"]`).
+Also remove `dependencies` in `project` and set them in `project.dynamic` (`dynamic = ["dependencies"]`).
 
 **Before**
 
@@ -33,7 +30,9 @@ name = "..."
 dynamic = ["dependencies"]
 ```
 
+`optional-dependencies` can be set in the same way.
+
 ## Configuration
 
-- `dependencies` is a list of Jinja2 templates and `version` (a VCS based version as [packaging.version.Version](https://packaging.pypa.io/en/latest/version.html#packaging.version.Version)). `dependencies` should be set in `project.dynamic`.
-- `optional-dependencies`: is an optional dependencies and each dependency is a list of Jinaj2 templates (same as the above). `optional-dependencies` should be set in `project.dynamic`.
+- `dependencies` (`tool.hatch.metadata.hooks.uv-dynamic-versioning.dependencies`): is a list of Jinja2 templates and `version` (a VCS based version as [packaging.version.Version](https://packaging.pypa.io/en/latest/version.html#packaging.version.Version)). `dependencies` should be set in `project.dynamic`.
+- `optional-dependencies` (`tool.hatch.metadata.hooks.uv-dynamic-versioning.optional-dependencies`): is an optional dependencies and each dependency is a list of Jinaj2 templates (same as the above). `optional-dependencies` should be set in `project.dynamic`.

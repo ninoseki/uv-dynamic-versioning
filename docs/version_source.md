@@ -9,7 +9,7 @@ Add `tool.hatch.version` in your `pyproject.toml` to use it.
 source = "uv-dynamic-versioning"
 ```
 
-Also remove `version` in `project` and set it in `dynamic` (`dynamic = ["version"]`).
+Also remove `version` in `project` and set it in `project.dynamic` (`dynamic = ["version"]`).
 
 **Before**
 
