@@ -1,7 +1,7 @@
 [project]
-name = "example"
+name = "version-source"
 dynamic = ["version"]
-description = "An example project for uv-dynamic-versioning"
+description = "An example project for uv-dynamic-versioning (version source)"
 readme = "README.md"
 requires-python = ">=3.9"
 dependencies = []

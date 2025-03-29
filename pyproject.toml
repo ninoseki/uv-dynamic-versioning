@@ -19,6 +19,7 @@ dependencies = [
   "dunamai~=1.23",
   "eval-type-backport~=0.2;python_version<'3.10'",
   "hatchling~=1.26",
+  "jinja2~=3.0",
   "pydantic~=2.10",
   "returns~=0.23",
   "tomlkit~=0.13",

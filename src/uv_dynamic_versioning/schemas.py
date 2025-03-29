@@ -30,3 +30,10 @@ class Tool(BaseModel):
 
 class Project(BaseModel):
     tool: Tool
+
+
+class MetadataHookConfig(BaseModel):
+    dependencies: list[str] | None = None
+    optional_dependencies: dict[str, list[str]] | None = Field(
+        default=None, alias="optional-dependencies"
+    )
