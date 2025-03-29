@@ -22,6 +22,6 @@ jobs:
           key: uv-3.11-${{ hashFiles('uv.lock') }}
       - run: uv sync --frozen
       - name: build
-        run: uv run pyproject-build
+        run: uv build
       - name: publish
         uses: pypa/gh-action-pypi-publish@release/v1
