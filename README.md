@@ -25,6 +25,14 @@ See [Version Source](docs/version_source.md) and [Metadata Hook](docs/metadata_h
 
 See [Examples](./examples/).
 
+## Projects Using `uv-dynamic-versioning`
+
+- [microsoft/essex-toolkit](https://github.com/microsoft/essex-toolkit)
+- [modelcontextprotocol/python-sdk](https://github.com/modelcontextprotocol/python-sdk)
+- [pydantic/logfire-mcp](https://github.com/pydantic/logfire-mcp)
+
+And more.
+
 ## Alternatives
 
 - [hatch-vcs](https://github.com/ofek/hatch-vcs): Hatch plugin for versioning with your preferred VCS.
