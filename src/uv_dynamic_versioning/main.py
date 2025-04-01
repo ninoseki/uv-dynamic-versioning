@@ -4,6 +4,8 @@ from pathlib import Path
 import tomlkit
 from dunamai import Version
 
+from uv_dynamic_versioning.jinja import render_jinja
+
 from . import schemas
 
 
@@ -35,6 +37,9 @@ def get_version(config: schemas.UvDynamicVersioning) -> str:
         pattern=config.pattern,
         pattern_prefix=config.pattern_prefix,
     )
+
+    if config.format_jinja:
+        return render_jinja(version, config)
 
     return version.serialize(
         metadata=config.metadata,

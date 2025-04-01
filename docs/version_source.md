@@ -31,7 +31,7 @@ dynamic = ["version"]
 
 > [!NOTE]
 >
-> - Configuration is almost same to [poetry-dynamic-versioning](https://github.com/mtkennerly/poetry-dynamic-versioning). But `format-jinja`, `format-jinja-imports` are not supported.
+> - Configuration is almost same to [poetry-dynamic-versioning](https://github.com/mtkennerly/poetry-dynamic-versioning). But `format-jinja-imports` is not supported.
 > - The following descriptions are excerpts from [poetry-dynamic-versioning](https://github.com/mtkennerly/poetry-dynamic-versioning).
 
 In your `pyproject.toml`, you may configure the following options:
@@ -103,6 +103,27 @@ In your `pyproject.toml`, you may configure the following options:
     - `{timestamp}` of the current commit, which expands to YYYYmmddHHMMSS as UTC
 
     Example: `v{base}+{distance}.{commit}`
+
+  - `format-jinja` (string, default: empty):
+    Jinja2 template for version formatting. Available variables:
+    - `base`: Base version (e.g., "1.0.0")
+    - `stage`: Stage (e.g., "alpha", "beta", "rc")
+    - `revision`: Revision number
+    - `distance`: Number of commits since last tag
+    - `commit`: Commit hash
+    - `dirty`: Boolean indicating if working directory is dirty
+    - `branch`: Current branch name
+    - `tagged_metadata`: Metadata from tag
+    - `branch_escaped`: Branch name with special characters removed
+    - `timestamp`: Timestamp of the commit
+    - `major`: Major version number
+    - `minor`: Minor version number
+    - `patch`: Patch version number
+    - `env`: Environment variables
+    - `bump_version`: Function to bump version
+    - `serialize_pep440`: Function to serialize version in PEP 440 format
+    - `serialize_pvp`: Function to serialize version in PVP format
+    - `serialize_semver`: Function to serialize version in SemVer format
 
   - `style` (string, default: unset):
     One of: `pep440`, `semver`, `pvp`.
