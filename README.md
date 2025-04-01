@@ -17,7 +17,7 @@ build-backend = "hatchling.build"
 This project offers two plugins:
 
 - Version source plugin: is for setting a version based on VCS.
-- Metadata hook plugin: is for setting dependencies and optional-dependencies dynamically based on on VCS. This plugin is useful for monorepo.
+- Metadata hook plugin: is for setting dependencies and optional-dependencies dynamically based on VCS version. This plugin is useful for monorepo.
 
 See [Version Source](docs/version_source.md) and [Metadata Hook](docs/metadata_hook.md) for more details.
 
@@ -27,9 +27,9 @@ See [Examples](./examples/).
 
 ## Projects Using `uv-dynamic-versioning`
 
-- [microsoft/essex-toolkit](https://github.com/microsoft/essex-toolkit)
-- [modelcontextprotocol/python-sdk](https://github.com/modelcontextprotocol/python-sdk)
-- [pydantic/logfire-mcp](https://github.com/pydantic/logfire-mcp)
+- [microsoft/essex-toolkit](https://github.com/microsoft/essex-toolkit): uses the version source plugin.
+- [modelcontextprotocol/python-sdk](https://github.com/modelcontextprotocol/python-sdk): uses the version source plugin.
+- [pydantic/pydantic-ai](https://github.com/pydantic/pydantic-ai): uses the version source and the metadata hook plugins.
 
 And more.
 
