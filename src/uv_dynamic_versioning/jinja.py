@@ -4,7 +4,7 @@ import contextlib
 import os
 import re
 from datetime import datetime
-from typing import Callable
+from typing import Any, Callable
 
 import jinja2
 from dunamai import (
@@ -23,6 +23,8 @@ def render_jinja(
     version: Version,
     config: schemas.UvDynamicVersioning,
 ) -> str:
+    assert config.format_jinja, "Jinja format is required"
+
     if config.bump and version.distance > 0:
         version = version.bump(smart=True)
 
@@ -35,24 +37,24 @@ class _JinjaDefaultContext(BaseModel):
     model_config = ConfigDict(arbitrary_types_allowed=True)
 
     version: Version
-    base: str | None = Field(default=None)
-    stage: str | None = Field(default=None)
-    revision: int | None = Field(default=None)
-    distance: int | None = Field(default=None)
-    commit: str | None = Field(default=None)
-    dirty: bool | None = Field(default=None)
-    branch: str | None = Field(default=None)
-    tagged_metadata: str | None = Field(default=None)
-    branch_escaped: str | None = Field(default=None)
-    timestamp: str | None = Field(default=None)
-    major: int | None = Field(default=None)
-    minor: int | None = Field(default=None)
-    patch: int | None = Field(default=None)
+    base: str | None = None
+    stage: str | None = None
+    revision: int | None = None
+    distance: int | None = None
+    commit: str | None = None
+    dirty: bool | None = None
+    branch: str | None = None
+    tagged_metadata: str | None = None
+    branch_escaped: str | None = None
+    timestamp: str | None = None
+    major: int | None = None
+    minor: int | None = None
+    patch: int | None = None
     env: os._Environ[str] = Field(default=os.environ)
-    bump_version: Callable[[Version, bool], Version] = Field(default=bump_version)
-    serialize_pep440: Callable[[Version], str] = Field(default=serialize_pep440)
-    serialize_pvp: Callable[[Version], str] = Field(default=serialize_pvp)
-    serialize_semver: Callable[[Version], str] = Field(default=serialize_semver)
+    bump_version: Callable[[Any], str] = Field(default=bump_version)
+    serialize_pep440: Callable[[Any], str] = Field(default=serialize_pep440)
+    serialize_pvp: Callable[[Any], str] = Field(default=serialize_pvp)
+    serialize_semver: Callable[[Any], str] = Field(default=serialize_semver)
 
     @classmethod
     def from_version(cls, version: Version) -> _JinjaDefaultContext:
