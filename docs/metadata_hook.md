@@ -34,24 +34,32 @@ dynamic = ["dependencies"]
 
 ## Configuration
 
-- `dependencies`: is a list of Jinja2 templates. `dependencies` should be set in `project.dynamic`. Available variables:
-  - `version`: Version ([dunamai.version](https://dunamai.readthedocs.io/en/latest/#dunamai.Version))
-  - `base`: Base version (e.g., "1.0.0")
-  - `stage`: Stage (e.g., "alpha", "beta", "rc")
-  - `revision`: Revision number
-  - `distance`: Number of commits since last tag
-  - `commit`: Commit hash
-  - `dirty`: Boolean indicating if working directory is dirty
-  - `branch`: Current branch name
-  - `tagged_metadata`: Metadata from tag
-  - `branch_escaped`: Branch name with special characters removed
-  - `timestamp`: Timestamp of the commit
-  - `major`: Major version number
-  - `minor`: Minor version number
-  - `patch`: Patch version number
-  - `env`: Environment variables
-  - `bump_version`: Function to bump version
-  - `serialize_pep440`: Function to serialize version in PEP 440 format
-  - `serialize_pvp`: Function to serialize version in PVP format
-  - `serialize_semver`: Function to serialize version in SemVer format
+- `dependencies`: is a list of Jinja2 templates. `dependencies` should be set in `project.dynamic`.
+
+  Available variables:
+
+  - `version`([dunamai.version](https://dunamai.readthedocs.io/en/latest/#dunamai.Version))
+  - `base` (string)
+  - `stage` (string or None)
+  - `revision` (integer or None)
+  - `distance` (integer)
+  - `commit` (string)
+  - `dirty` (boolean)
+  - `tagged_metadata` (string or None)
+  - `version` (dunumai.Version)
+  - `env` (dictionary of environment variables)
+  - `branch` (string or None)
+  - `branch_escaped` (string or None)
+  - `timestamp` (string or None)
+  - `major` (integer)
+  - `minor` (integer)
+  - `patch` (integer)
+
+  Available functions:
+
+  - `bump_version` ([from Dunamai](https://dunamai.readthedocs.io/en/latest/#dunamai.bump_version))
+  - `serialize_pep440` ([from Dunamai](https://dunamai.readthedocs.io/en/latest/#dunamai.serialize_pep440))
+  - `serialize_semver` ([from Dunamai](https://dunamai.readthedocs.io/en/latest/#dunamai.serialize_semver))
+  - `serialize_pvp` ([from Dunamai](https://dunamai.readthedocs.io/en/latest/#dunamai.serialize_pvp))
+
 - `optional-dependencies`: is an optional dependencies and each dependency is a list of Jinaj2 templates. `optional-dependencies` should be set in `project.dynamic`. Available variables are same as the above.

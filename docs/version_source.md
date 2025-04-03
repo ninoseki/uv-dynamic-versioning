@@ -31,7 +31,7 @@ dynamic = ["version"]
 
 > [!NOTE]
 >
-> - Configuration is almost same as [poetry-dynamic-versioning](https://github.com/mtkennerly/poetry-dynamic-versioning). But `format-jinja-imports` is not supported.
+> - Configuration is almost same as [poetry-dynamic-versioning](https://github.com/mtkennerly/poetry-dynamic-versioning). But `format-jinja-imports` and `fix-shallow-repository` are not supported.
 > - The following descriptions are excerpts from [poetry-dynamic-versioning](https://github.com/mtkennerly/poetry-dynamic-versioning).
 
 You may configure the following options under `[tool.uv-dynamic-versioning]`:
@@ -71,26 +71,55 @@ You may configure the following options under `[tool.uv-dynamic-versioning]`:
 
   Example: `v{base}+{distance}.{commit}`
 
-- `format-jinja` (string, default: empty): Jinja2 template for version formatting. Available variables:
-  - `version`: Version ([dunamai.version](https://dunamai.readthedocs.io/en/latest/#dunamai.Version))
-  - `base`: Base version (e.g., "1.0.0")
-  - `stage`: Stage (e.g., "alpha", "beta", "rc")
-  - `revision`: Revision number
-  - `distance`: Number of commits since last tag
-  - `commit`: Commit hash
-  - `dirty`: Boolean indicating if working directory is dirty
-  - `branch`: Current branch name
-  - `tagged_metadata`: Metadata from tag
-  - `branch_escaped`: Branch name with special characters removed
-  - `timestamp`: Timestamp of the commit
-  - `major`: Major version number
-  - `minor`: Minor version number
-  - `patch`: Patch version number
-  - `env`: Environment variables
-  - `bump_version`: Function to bump version
-  - `serialize_pep440`: Function to serialize version in PEP 440 format
-  - `serialize_pvp`: Function to serialize version in PVP format
-  - `serialize_semver`: Function to serialize version in SemVer format
+- `format-jinja` (string, default: unset):
+  This defines a custom output format for the version, using a [Jinja](https://pypi.org/project/Jinja2) template. When this is set, `format` is ignored.
+
+  Available variables:
+
+  - `version`([dunamai.version](https://dunamai.readthedocs.io/en/latest/#dunamai.Version))
+  - `base` (string)
+  - `stage` (string or None)
+  - `revision` (integer or None)
+  - `distance` (integer)
+  - `commit` (string)
+  - `dirty` (boolean)
+  - `tagged_metadata` (string or None)
+  - `version` (dunumai.Version)
+  - `env` (dictionary of environment variables)
+  - `branch` (string or None)
+  - `branch_escaped` (string or None)
+  - `timestamp` (string or None)
+  - `major` (integer)
+  - `minor` (integer)
+  - `patch` (integer)
+
+  Available functions:
+
+  - `bump_version` ([from Dunamai](https://dunamai.readthedocs.io/en/latest/#dunamai.bump_version))
+  - `serialize_pep440` ([from Dunamai](https://dunamai.readthedocs.io/en/latest/#dunamai.serialize_pep440))
+  - `serialize_semver` ([from Dunamai](https://dunamai.readthedocs.io/en/latest/#dunamai.serialize_semver))
+  - `serialize_pvp` ([from Dunamai](https://dunamai.readthedocs.io/en/latest/#dunamai.serialize_pvp))
+
+  Simple example:
+
+  ```toml
+  format-jinja = "{% if distance == 0 %}{{ base }}{% else %}{{ base }}+{{ distance }}.{{ commit }}{% endif %}"
+  ```
+
+  Complex example:
+
+  ```toml
+  format-jinja = """
+      {%- if distance == 0 -%}
+          {{ serialize_pep440(base, stage, revision) }}
+      {%- elif revision is not none -%}
+          {{ serialize_pep440(base, stage, revision + 1, dev=distance, metadata=[commit]) }}
+      {%- else -%}
+          {{ serialize_pep440(bump_version(base), stage, revision, dev=distance, metadata=[commit]) }}
+      {%- endif -%}
+  """
+  ```
+
 - `style` (string, default: unset): One of: `pep440`, `semver`, `pvp`. These are pre-configured output formats. If you set both a `style` and a `format`, then the format will be validated against the style's rules. If `style` is unset, the default output format will follow PEP 440, but a custom `format` will only be validated if `style` is set explicitly.
 - `latest-tag` (boolean, default: false): If true, then only check the latest tag for a version, rather than looking through all the tags until a suitable one is found to match the `pattern`.
 - `bump` (boolean or table, default: false): If enabled, then increment the last part of the version `base` by 1, unless the `stage` is set, in which case increment the `revision` by 1 or set it to a default of 2 if there was no `revision`. Does nothing when on a commit with a version tag. One of:
