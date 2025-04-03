@@ -1,5 +1,7 @@
 # uv-dynamic-versioning
 
+[![PyPI version](https://badge.fury.io/py/uv-dynamic-versioning.svg)](https://badge.fury.io/py/uv-dynamic-versioning)
+
 [poetry-dynamic-versioning](https://github.com/mtkennerly/poetry-dynamic-versioning) influenced dynamic versioning tool for [uv](https://github.com/astral-sh/uv)/[hatch](https://github.com/pypa/hatch), powered by [dunamai](https://github.com/mtkennerly/dunamai/).
 
 ## Installation
