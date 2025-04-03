@@ -115,6 +115,7 @@ You may configure the following options under `[tool.uv-dynamic-versioning]`:
   This is only used for Git and Mercurial.
 - `strict` (boolean, default: false): If true, then fail instead of falling back to 0.0.0 when there are no tags.
 - `ignore-untracked` (boolean, default: false): If true, ignore untracked files when determining whether the repository is dirty.
+- `commit-length` (integer, default: unset): Use this many characters from the start of the full commit hash.
 
 Simple example:
 
