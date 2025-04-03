@@ -36,6 +36,7 @@ def _get_version(config: schemas.UvDynamicVersioning) -> Version:
         ignore_untracked=config.ignore_untracked,
         pattern=config.pattern,
         pattern_prefix=config.pattern_prefix,
+        commit_length=config.commit_length,
     )
 
 
