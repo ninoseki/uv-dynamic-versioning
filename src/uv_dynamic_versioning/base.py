@@ -3,7 +3,7 @@ from functools import cached_property
 from returns.pipeline import flow
 
 from . import schemas
-from .main import get_version, parse, read, validate
+from .main import parse, read, validate
 
 
 class BasePlugin:
@@ -15,6 +15,3 @@ class BasePlugin:
     @property
     def project_config(self) -> schemas.UvDynamicVersioning:
         return self.project.tool.uv_dynamic_versioning or schemas.UvDynamicVersioning()
-
-    def get_version(self) -> str:
-        return get_version(self.project_config)

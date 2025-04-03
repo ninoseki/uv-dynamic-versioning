@@ -35,7 +35,7 @@ def test_foo(semver_tag: TagReference):
         new_callable=PropertyMock,
     ) as mock_root:
         mock_root.return_value = {
-            "dependencies": ["foo=={{ version}}"],
+            "dependencies": ["foo=={{ version }}"],
         }
 
         hook = DependenciesMetadataHook(str(semver_tag.repo.working_dir), {})

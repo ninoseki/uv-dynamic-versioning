@@ -2,17 +2,13 @@ from __future__ import annotations
 
 from functools import cached_property
 
+from dunamai import Version
 from hatchling.metadata.plugin.interface import MetadataHookInterface
-from jinja2 import Environment
-from packaging.version import Version
 
 from . import schemas
 from .base import BasePlugin
-
-
-def render_template(s: str, *, env: Environment, version: Version):
-    template = env.from_string(s)
-    return template.render(version=version)
+from .main import get_version
+from .template import render_template
 
 
 class DependenciesMetadataHook(BasePlugin, MetadataHookInterface):
@@ -27,17 +23,19 @@ class DependenciesMetadataHook(BasePlugin, MetadataHookInterface):
         return schemas.MetadataHookConfig.model_validate(self.config)
 
     @cached_property
-    def project_version(self) -> Version:
-        version = self.get_version()
-        return Version(version)
+    def version(self) -> Version:
+        version = get_version(self.project_config)[1]
+        if self.project_config.bump:
+            return version.bump(smart=True)
+
+        return version
 
     def render_dependencies(self) -> list[str] | None:
         if self.plugin_config.dependencies is None:
             return None
 
-        env = Environment()
         return [
-            render_template(dep, env=env, version=self.project_version)
+            render_template(dep, version=self.version)
             for dep in self.plugin_config.dependencies
         ]
 
@@ -45,12 +43,8 @@ class DependenciesMetadataHook(BasePlugin, MetadataHookInterface):
         if self.plugin_config.optional_dependencies is None:
             return None
 
-        env = Environment()
         return {
-            name: [
-                render_template(dep, env=env, version=self.project_version)
-                for dep in deps
-            ]
+            name: [render_template(dep, version=self.version) for dep in deps]
             for name, deps in self.plugin_config.optional_dependencies.items()
         }
 

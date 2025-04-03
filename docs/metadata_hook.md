@@ -5,7 +5,7 @@
 > [!NOTE]
 > VCS based version configuration is the same as described at [Version Source](./version_source.md).
 
-Add `tool.hatch.metadata.hooks.uv-dynamic-versioning` in your `pyproject.toml` to use it.
+Add `[tool.hatch.metadata.hooks.uv-dynamic-versioning]` in your `pyproject.toml` to use it.
 
 ```toml
 [tool.hatch.metadata.hooks.uv-dynamic-versioning]
@@ -34,5 +34,24 @@ dynamic = ["dependencies"]
 
 ## Configuration
 
-- `dependencies` (`tool.hatch.metadata.hooks.uv-dynamic-versioning.dependencies`): is a list of Jinja2 templates. A template has `version` (a VCS based version as [packaging.version.Version](https://packaging.pypa.io/en/latest/version.html#packaging.version.Version)) variable. `dependencies` should be set in `project.dynamic`.
-- `optional-dependencies` (`tool.hatch.metadata.hooks.uv-dynamic-versioning.optional-dependencies`): is an optional dependencies and each dependency is a list of Jinaj2 templates (same as the above). `optional-dependencies` should be set in `project.dynamic`.
+- `dependencies`: is a list of Jinja2 templates. `dependencies` should be set in `project.dynamic`. Available variables:
+  - `version`: Version ([dunamai.version](https://dunamai.readthedocs.io/en/latest/#dunamai.Version))
+  - `base`: Base version (e.g., "1.0.0")
+  - `stage`: Stage (e.g., "alpha", "beta", "rc")
+  - `revision`: Revision number
+  - `distance`: Number of commits since last tag
+  - `commit`: Commit hash
+  - `dirty`: Boolean indicating if working directory is dirty
+  - `branch`: Current branch name
+  - `tagged_metadata`: Metadata from tag
+  - `branch_escaped`: Branch name with special characters removed
+  - `timestamp`: Timestamp of the commit
+  - `major`: Major version number
+  - `minor`: Minor version number
+  - `patch`: Patch version number
+  - `env`: Environment variables
+  - `bump_version`: Function to bump version
+  - `serialize_pep440`: Function to serialize version in PEP 440 format
+  - `serialize_pvp`: Function to serialize version in PVP format
+  - `serialize_semver`: Function to serialize version in SemVer format
+- `optional-dependencies`: is an optional dependencies and each dependency is a list of Jinaj2 templates. `optional-dependencies` should be set in `project.dynamic`. Available variables are same as the above.
