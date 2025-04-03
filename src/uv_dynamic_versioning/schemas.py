@@ -12,6 +12,7 @@ class UvDynamicVersioning(BaseModel):
     pattern: Pattern = Pattern.Default
     pattern_prefix: str | None = Field(default=None, alias="pattern-prefix")
     format: str | None = None
+    format_jinja: str | None = Field(default=None, alias="format-jinja")
     style: Style | None = None
     latest_tag: bool = False
     strict: bool = False
