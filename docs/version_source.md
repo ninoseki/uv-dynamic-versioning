@@ -116,6 +116,7 @@ You may configure the following options under `[tool.uv-dynamic-versioning]`:
 - `strict` (boolean, default: false): If true, then fail instead of falling back to 0.0.0 when there are no tags.
 - `ignore-untracked` (boolean, default: false): If true, ignore untracked files when determining whether the repository is dirty.
 - `commit-length` (integer, default: unset): Use this many characters from the start of the full commit hash.
+- `fallback-version` (str, default: unset): Version to be used if an error occurs when obtaining the version, for example, there is no `.git/`. If not specified, unsuccessful version obtaining from vcs will raise an error.
 
 Simple example:
 
