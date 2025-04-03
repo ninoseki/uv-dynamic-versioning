@@ -29,6 +29,7 @@ class UvDynamicVersioning(BaseModel):
     ignore_untracked: bool = Field(default=False, alias="ignore-untracked")
     commit_length: int | None = Field(default=None, alias="commit-length")
     bump: bool | BumpConfig = False
+    fallback_version: str | None = Field(default=None, alias="fallback-version")
 
     @cached_property
     def bump_config(self) -> BumpConfig:
