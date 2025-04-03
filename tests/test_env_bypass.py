@@ -1,6 +1,7 @@
 import os
 
 import pytest
+from dunamai import Version
 
 from uv_dynamic_versioning import schemas
 from uv_dynamic_versioning.main import get_version
@@ -23,5 +24,7 @@ def set_uv_dynamic_versioning_bypass(version: str):
 
 @pytest.mark.usefixtures("set_uv_dynamic_versioning_bypass")
 def test_get_version(version: str):
-    got = get_version(schemas.UvDynamicVersioning())
-    assert got == version
+    assert get_version(schemas.UvDynamicVersioning()) == (
+        version,
+        Version.parse(version),
+    )
