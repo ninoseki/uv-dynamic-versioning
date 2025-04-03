@@ -26,18 +26,23 @@ def _get_version(config: schemas.UvDynamicVersioning) -> Version:
     if "UV_DYNAMIC_VERSIONING_BYPASS" in os.environ:
         return Version.parse(os.environ["UV_DYNAMIC_VERSIONING_BYPASS"])
 
-    return Version.from_vcs(
-        config.vcs,
-        latest_tag=config.latest_tag,
-        strict=config.strict,
-        tag_branch=config.tag_branch,
-        tag_dir=config.tag_dir,
-        full_commit=config.full_commit,
-        ignore_untracked=config.ignore_untracked,
-        pattern=config.pattern,
-        pattern_prefix=config.pattern_prefix,
-        commit_length=config.commit_length,
-    )
+    try:
+        return Version.from_vcs(
+            config.vcs,
+            latest_tag=config.latest_tag,
+            strict=config.strict,
+            tag_branch=config.tag_branch,
+            tag_dir=config.tag_dir,
+            full_commit=config.full_commit,
+            ignore_untracked=config.ignore_untracked,
+            pattern=config.pattern,
+            pattern_prefix=config.pattern_prefix,
+            commit_length=config.commit_length,
+        )
+    except RuntimeError as e:
+        if fallback_version := config.fallback_version:
+            return Version(fallback_version)
+        raise e
 
 
 def get_version(config: schemas.UvDynamicVersioning) -> tuple[str, Version]:
