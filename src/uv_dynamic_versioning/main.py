@@ -4,7 +4,7 @@ from pathlib import Path
 import tomlkit
 from dunamai import Version
 
-from uv_dynamic_versioning.jinja import render_jinja
+from uv_dynamic_versioning.template import render_jinja
 
 from . import schemas
 
