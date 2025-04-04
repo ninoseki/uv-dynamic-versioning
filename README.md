@@ -23,6 +23,10 @@ This project offers two plugins:
 
 See [Version Source](docs/version_source.md) and [Metadata Hook](docs/metadata_hook.md) for more details.
 
+## Tips
+
+See [Tips](./docs/tips.md).
+
 ## Examples
 
 See [Examples](./examples/).
