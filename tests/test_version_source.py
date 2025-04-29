@@ -50,3 +50,11 @@ def test_with_jinja2_format(semver_tag: TagReference, mock_root: PropertyMock):
 
     version: str = source.get_version_data()["version"]
     assert version.startswith("1.0.0.dev0+g")
+
+
+def test_with_pattern(semver_tag: TagReference, mock_root: PropertyMock):
+    source = DynamicVersionSource(str(semver_tag.repo.working_dir), {})
+    mock_root.return_value = "tests/fixtures/with-pattern/"
+
+    version: str = source.get_version_data()["version"]
+    assert version == "1"
