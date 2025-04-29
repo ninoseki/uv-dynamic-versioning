@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from functools import cached_property
 
-from dunamai import Pattern, Style, Vcs
+from dunamai import Style, Vcs
 from pydantic import BaseModel, Field
 
 
@@ -16,7 +16,7 @@ class UvDynamicVersioning(BaseModel):
     metadata: bool | None = None
     tagged_metadata: bool = Field(default=False, alias="tagged-metadata")
     dirty: bool = False
-    pattern: Pattern = Pattern.Default
+    pattern: str = "default"
     pattern_prefix: str | None = Field(default=None, alias="pattern-prefix")
     format: str | None = None
     format_jinja: str | None = Field(default=None, alias="format-jinja")
