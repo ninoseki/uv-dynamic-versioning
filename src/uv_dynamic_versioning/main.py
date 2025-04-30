@@ -52,7 +52,7 @@ def get_version(config: schemas.UvDynamicVersioning) -> tuple[str, Version]:
         # NOTE: don't know why but poetry-dynamic-versioning check bump_config and also distance when using Jinja2
         #       so follow it
         updated = (
-            version.bump(smart=True, index=config.bump_config.index)
+            version.bump(smart=config.bump_config.smart, index=config.bump_config.index)
             if config.bump_config.enable and version.distance > 0
             else version
         )
@@ -62,7 +62,7 @@ def get_version(config: schemas.UvDynamicVersioning) -> tuple[str, Version]:
         )
 
     updated = (
-        version.bump(smart=True, index=config.bump_config.index)
+        version.bump(smart=config.bump_config.smart, index=config.bump_config.index)
         if config.bump_config.enable
         else version
     )

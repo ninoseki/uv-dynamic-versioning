@@ -28,3 +28,23 @@ def test_get_version(version: str):
         version,
         Version.parse(version),
     )
+
+
+@pytest.mark.usefixtures("set_uv_dynamic_versioning_bypass")
+def test_get_version_with_smart_bump(version: str):
+    assert get_version(
+        schemas.UvDynamicVersioning(bump=schemas.BumpConfig(enable=True, smart=True))
+    ) == (
+        version,
+        Version.parse(version),
+    )
+
+
+@pytest.mark.usefixtures("set_uv_dynamic_versioning_bypass")
+def test_get_version_with_bump(version: str):
+    assert get_version(
+        schemas.UvDynamicVersioning(bump=schemas.BumpConfig(enable=True, smart=False))
+    ) == (
+        version,
+        Version.parse(version),
+    )

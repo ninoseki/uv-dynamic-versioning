@@ -9,6 +9,7 @@ from pydantic import BaseModel, Field
 class BumpConfig(BaseModel):
     enable: bool = False
     index: int = -1
+    smart: bool = True
 
 
 class UvDynamicVersioning(BaseModel):
