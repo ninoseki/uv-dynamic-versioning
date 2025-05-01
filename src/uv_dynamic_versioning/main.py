@@ -23,9 +23,6 @@ def validate(project: tomlkit.TOMLDocument):
 
 
 def _get_version(config: schemas.UvDynamicVersioning) -> Version:
-    if "UV_DYNAMIC_VERSIONING_BYPASS" in os.environ:
-        return Version.parse(os.environ["UV_DYNAMIC_VERSIONING_BYPASS"])
-
     try:
         return Version.from_vcs(
             config.vcs,
@@ -46,6 +43,10 @@ def _get_version(config: schemas.UvDynamicVersioning) -> Version:
 
 
 def get_version(config: schemas.UvDynamicVersioning) -> tuple[str, Version]:
+    version_bypass: str = os.getenv("UV_DYNAMIC_VERSIONING_BYPASS", "")
+    if version_bypass != "":
+        return (version_bypass, Version.parse(version_bypass))
+
     version = _get_version(config)
 
     if config.format_jinja:
