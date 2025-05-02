@@ -3,7 +3,7 @@ from collections.abc import Generator
 from unittest.mock import PropertyMock, patch
 
 import pytest
-from dunamai import Version
+from dunamai import Style, Version
 from git import Repo, TagReference
 
 from uv_dynamic_versioning import schemas
@@ -95,3 +95,16 @@ def test_get_version_with_bypass_with_format(version: str):
         version,
         Version.parse(version),
     )
+
+
+@pytest.mark.usefixtures("semver_tag")
+def test_get_version_with_invalid_combination_of_format_jinja_and_style():
+    config = schemas.UvDynamicVersioning.model_validate(
+        {
+            "format-jinja": "invalid",
+            "style": "pep440",
+        }
+    )
+    assert config.style == Style.Pep440
+    with pytest.raises(ValueError):
+        get_version(config)
