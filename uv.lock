@@ -1,4 +1,5 @@
 version = 1
+revision = 1
 requires-python = ">=3.9, <4.0"
 resolution-markers = [
     "python_full_version < '3.13'",
@@ -529,18 +530,6 @@ wheels = [
 ]
 
 [[package]]
-name = "returns"
-version = "0.23.0"
-source = { registry = "https://pypi.org/simple" }
-dependencies = [
-    { name = "typing-extensions" },
-]
-sdist = { url = "https://files.pythonhosted.org/packages/52/b4/411f1e4026344f0ccabc5654aee02280ebe8a9783756e53c76437693dc9a/returns-0.23.0.tar.gz", hash = "sha256:27594c28e5fc338e052d27ddf77fe1da82db4472f6d59901e7e9165be35a5256", size = 242563 }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/9c/cc/ff7046c009c17136f83764f8ff225309b58d364c2ffd5626b5a338bd865a/returns-0.23.0-py3-none-any.whl", hash = "sha256:278aa6168072b24574ad14be32f7123d1b835928473dd40bc506f47c8b25859a", size = 155284 },
-]
-
-[[package]]
 name = "rich"
 version = "13.8.0"
 source = { registry = "https://pypi.org/simple" }
@@ -607,7 +596,6 @@ dependencies = [
     { name = "hatchling" },
     { name = "jinja2" },
     { name = "pydantic" },
-    { name = "returns" },
     { name = "tomlkit" },
 ]
 
@@ -627,7 +615,6 @@ requires-dist = [
     { name = "hatchling", specifier = "~=1.26" },
     { name = "jinja2", specifier = "~=3.0" },
     { name = "pydantic", specifier = "~=2.10" },
-    { name = "returns", specifier = "~=0.23" },
     { name = "tomlkit", specifier = "~=0.13" },
 ]
 
