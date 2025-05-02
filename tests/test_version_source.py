@@ -1,10 +1,13 @@
+import os
 from collections.abc import Generator
 from unittest.mock import PropertyMock, patch
 
 import pytest
+from dunamai import Version
 from git import Repo, TagReference
 
-from uv_dynamic_versioning.version_source import DynamicVersionSource
+from uv_dynamic_versioning import schemas
+from uv_dynamic_versioning.version_source import DynamicVersionSource, get_version
 
 
 @pytest.fixture
@@ -58,3 +61,37 @@ def test_with_pattern(semver_tag: TagReference, mock_root: PropertyMock):
 
     version: str = source.get_version_data()["version"]
     assert version == "1"
+
+
+@pytest.fixture
+def version():
+    return "1.1.1"
+
+
+@pytest.fixture
+def set_uv_dynamic_versioning_bypass(version: str):
+    os.environ["UV_DYNAMIC_VERSIONING_BYPASS"] = version
+
+    try:
+        yield version
+    finally:
+        del os.environ["UV_DYNAMIC_VERSIONING_BYPASS"]
+
+
+@pytest.mark.usefixtures("set_uv_dynamic_versioning_bypass")
+def test_get_version_with_bypass(version: str):
+    assert get_version(schemas.UvDynamicVersioning()) == (
+        version,
+        Version.parse(version),
+    )
+
+
+@pytest.mark.usefixtures("set_uv_dynamic_versioning_bypass")
+def test_get_version_with_bypass_with_format(version: str):
+    # NOTE: format should be ignored when bypassing
+    assert get_version(
+        schemas.UvDynamicVersioning(format="v{base}+{distance}.{commit}")
+    ) == (
+        version,
+        Version.parse(version),
+    )
