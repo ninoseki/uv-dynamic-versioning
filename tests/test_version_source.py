@@ -1,3 +1,4 @@
+import os
 from collections.abc import Generator
 from unittest.mock import PropertyMock, patch
 
@@ -5,6 +6,21 @@ import pytest
 from git import Repo, TagReference
 
 from uv_dynamic_versioning.version_source import DynamicVersionSource
+
+
+@pytest.fixture
+def bypass_version():
+    return "2.3.4"
+
+
+@pytest.fixture
+def set_uv_dynamic_versioning_bypass(bypass_version: str):
+    os.environ["UV_DYNAMIC_VERSIONING_BYPASS"] = bypass_version
+
+    try:
+        yield bypass_version
+    finally:
+        del os.environ["UV_DYNAMIC_VERSIONING_BYPASS"]
 
 
 @pytest.fixture
@@ -58,3 +74,23 @@ def test_with_pattern(semver_tag: TagReference, mock_root: PropertyMock):
 
     version: str = source.get_version_data()["version"]
     assert version == "1"
+
+
+@pytest.mark.usefixtures("set_uv_dynamic_versioning_bypass")
+def test_with_bump_and_bypass(
+    semver_tag: TagReference, mock_root: PropertyMock, bypass_version: str
+):
+    source = DynamicVersionSource(str(semver_tag.repo.working_dir), {})
+    mock_root.return_value = "tests/fixtures/with-bump-and-format/"
+    semver_tag.repo.git.execute(
+        ["git", "commit", "--allow-empty", "-m", "empty commit", "--no-gpg-sign"]
+    )
+
+    assert "UV_DYNAMIC_VERSIONING_BYPASS" in os.environ
+    assert os.environ["UV_DYNAMIC_VERSIONING_BYPASS"] == bypass_version
+
+    try:
+        version: str = source.get_version_data()["version"]
+        assert version == bypass_version
+    finally:
+        semver_tag.repo.git.execute(["git", "reset", "--soft", "HEAD~1"])
