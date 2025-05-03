@@ -62,4 +62,4 @@ dynamic = ["dependencies"]
   - `serialize_semver` ([from Dunamai](https://dunamai.readthedocs.io/en/latest/#dunamai.serialize_semver))
   - `serialize_pvp` ([from Dunamai](https://dunamai.readthedocs.io/en/latest/#dunamai.serialize_pvp))
 
-- `optional-dependencies`: is an optional dependencies and each dependency is a list of Jinaj2 templates. `optional-dependencies` should be set in `project.dynamic`. Available variables are same as the above.
+- `optional-dependencies`: is an optional dependencies and each dependency is a list of Jinja2 templates. `optional-dependencies` should be set in `project.dynamic`. Available variables are same as the above.
