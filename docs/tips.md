@@ -1,6 +1,6 @@
 # Tips
 
-## Dpendabot
+## Dependabot
 
 Dependabot may fail if your project uses Depandabot and `uv-dynamic-versioning` together.
 
