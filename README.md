@@ -21,15 +21,15 @@ This project offers two plugins:
 - Version source plugin: is for setting a version based on VCS.
 - Metadata hook plugin: is for setting dependencies and optional-dependencies dynamically based on VCS version. This plugin is useful for monorepo.
 
-See [Version Source](docs/version_source.md) and [Metadata Hook](docs/metadata_hook.md) for more details.
+See [Version Source](https://github.com/ninoseki/uv-dynamic-versioning/blob/main/docs/version_source.md) and [Metadata Hook](https://github.com/ninoseki/uv-dynamic-versioning/blob/main/docs/metadata_hook.md) for more details.
 
 ## Tips
 
-See [Tips](./docs/tips.md).
+See [Tips](https://github.com/ninoseki/uv-dynamic-versioning/blob/main/docs/tips.md).
 
 ## Examples
 
-See [Examples](./examples/).
+See [Examples](https://github.com/ninoseki/uv-dynamic-versioning/tree/main/examples/).
 
 ## Projects Using `uv-dynamic-versioning`
 
