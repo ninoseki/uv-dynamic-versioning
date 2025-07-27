@@ -1,35 +1,52 @@
 from __future__ import annotations
 
 from functools import cached_property
+from dataclasses import dataclass, field
 
 from dunamai import Style, Vcs
-from pydantic import BaseModel, Field
 
 
-class BumpConfig(BaseModel):
+def _filter_dict(cls, data: dict):
+    valid_fields = {f.name for f in cls.__dataclass_fields__.values()}
+
+    result = {}
+    for k, v in data.items():
+        key = k.replace("-", "_")
+        if key in valid_fields:
+            result[key] = v
+    return result
+
+
+@dataclass
+class BumpConfig:
     enable: bool = False
     index: int = -1
 
+    @classmethod
+    def model_validate(cls, data: dict):
+        return cls(**_filter_dict(cls, data or {}))
 
-class UvDynamicVersioning(BaseModel):
+
+@dataclass
+class UvDynamicVersioning:
     vcs: Vcs = Vcs.Any
     metadata: bool | None = None
-    tagged_metadata: bool = Field(default=False, alias="tagged-metadata")
+    tagged_metadata: bool = field(default=False)
     dirty: bool = False
     pattern: str = "default"
-    pattern_prefix: str | None = Field(default=None, alias="pattern-prefix")
+    pattern_prefix: str | None = field(default=None)
     format: str | None = None
-    format_jinja: str | None = Field(default=None, alias="format-jinja")
+    format_jinja: str | None = field(default=None)
     style: Style | None = None
     latest_tag: bool = False
     strict: bool = False
-    tag_dir: str = Field(default="tags", alias="tag-dir")
-    tag_branch: str | None = Field(default=None, alias="tag-branch")
-    full_commit: bool = Field(default=False, alias="full-commit")
-    ignore_untracked: bool = Field(default=False, alias="ignore-untracked")
-    commit_length: int | None = Field(default=None, alias="commit-length")
+    tag_dir: str = field(default="tags")
+    tag_branch: str | None = field(default=None)
+    full_commit: bool = field(default=False)
+    ignore_untracked: bool = field(default=False)
+    commit_length: int | None = field(default=None)
     bump: bool | BumpConfig = False
-    fallback_version: str | None = Field(default=None, alias="fallback-version")
+    fallback_version: str | None = field(default=None)
 
     @cached_property
     def bump_config(self) -> BumpConfig:
@@ -41,19 +58,51 @@ class UvDynamicVersioning(BaseModel):
 
         return self.bump
 
+    @classmethod
+    def model_validate(cls, data: dict):
+        data = _filter_dict(cls, data or {})
+        if "vcs" in data and isinstance(data["vcs"], str):
+            data["vcs"] = Vcs(data["vcs"])
+        if "style" in data and isinstance(data["style"], str):
+            try:
+                data["style"] = Style(data["style"])
+            except ValueError:
+                data["style"] = None
+        return cls(**data)
 
-class Tool(BaseModel):
-    uv_dynamic_versioning: UvDynamicVersioning | None = Field(
-        default=None, alias="uv-dynamic-versioning"
-    )
+
+@dataclass
+class Tool:
+    uv_dynamic_versioning: UvDynamicVersioning | None = field(default=None)
+
+    @classmethod
+    def model_validate(cls, data: dict):
+        data = _filter_dict(cls, data or {})
+        if "uv_dynamic_versioning" in data and isinstance(
+            data["uv_dynamic_versioning"], dict
+        ):
+            data["uv_dynamic_versioning"] = UvDynamicVersioning.model_validate(
+                data["uv_dynamic_versioning"]
+            )
+        return cls(**data)
 
 
-class Project(BaseModel):
+@dataclass
+class Project:
     tool: Tool
 
+    @classmethod
+    def model_validate(cls, data: dict):
+        data = _filter_dict(cls, data or {})
+        if "tool" in data and isinstance(data["tool"], dict):
+            data["tool"] = Tool.model_validate(data["tool"])
+        return cls(**data)
 
-class MetadataHookConfig(BaseModel):
+@dataclass
+class MetadataHookConfig:
     dependencies: list[str] | None = None
-    optional_dependencies: dict[str, list[str]] | None = Field(
-        default=None, alias="optional-dependencies"
-    )
+    optional_dependencies: dict[str, list[str]] | None = field(default=None)
+
+    @classmethod
+    def model_validate(cls, data: dict):
+        return cls(**_filter_dict(cls, data or {}))
