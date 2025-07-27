@@ -20,7 +20,6 @@ jobs:
         with:
           enable-cache: true
           python-version: ${{ matrix.python-version }}
-      - run: pip install -r requirements.txt
       - run: uv sync --frozen
       - run: |
           git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
