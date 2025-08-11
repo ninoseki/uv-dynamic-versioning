@@ -20,11 +20,11 @@ class DependenciesMetadataHook(BasePlugin, MetadataHookInterface):
 
     @cached_property
     def plugin_config(self) -> schemas.MetadataHookConfig:
-        return schemas.MetadataHookConfig.model_validate(self.config)
+        return schemas.MetadataHookConfig.from_dict(self.config)
 
     @cached_property
     def version(self) -> Version:
-        version = get_version(self.project_config)[1]
+        _, version = get_version(self.project_config)
         if self.project_config.bump:
             return version.bump(smart=True)
 

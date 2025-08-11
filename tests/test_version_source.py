@@ -99,7 +99,7 @@ def test_get_version_with_bypass_with_format(version: str):
 
 @pytest.mark.usefixtures("semver_tag")
 def test_get_version_with_invalid_combination_of_format_jinja_and_style():
-    config = schemas.UvDynamicVersioning.model_validate(
+    config = schemas.UvDynamicVersioning.from_dict(
         {
             "format-jinja": "invalid",
             "style": "pep440",
