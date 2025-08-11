@@ -8,5 +8,5 @@ class DynamicVersionSource(BasePlugin, VersionSourceInterface):
     PLUGIN_NAME = "uv-dynamic-versioning"
 
     def get_version_data(self) -> dict[str, str]:
-        version = get_version(self.project_config)[0]
+        version, _ = get_version(self.project_config)
         return {"version": version}
