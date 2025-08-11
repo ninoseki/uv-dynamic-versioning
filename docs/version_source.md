@@ -2,11 +2,18 @@
 
 `uv-dynamic-versioning` version source allows you to set a version based on VCS.
 
-Add `tool.hatch.version` in your `pyproject.toml` to use it.
+Add `tool.hatch.version` & `build-system` in your `pyproject.toml` and configure them to use `uv-dynamic-versioning`.
 
 ```toml
 [tool.hatch.version]
 source = "uv-dynamic-versioning"
+
+[build-system]
+requires = [
+  "hatchling",
+  "uv_dynamic_versioning",
+]
+build-backend = "hatchling.build"
 ```
 
 Also remove `version` in `project` and set it in `project.dynamic` (`dynamic = ["version"]`).
@@ -25,6 +32,25 @@ version = "0.1.0"
 [project]
 name = "..."
 dynamic = ["version"]
+```
+
+Then this plugin works out of the box (defaults to using the semver style).
+
+For example:
+
+```bash
+$ git tag v1.0.0
+$ uv build
+Building source distribution...
+Building wheel from source distribution...
+Successfully built dist/foo-1.0.0.tar.gz
+Successfully built dist/foo-1.0.0-py3-none-any.whl
+# check METADATA file (ref. https://packaging.python.org/en/latest/specifications/core-metadata/)
+$ tar -xf dist/foo-1.0.0-py3-none-any.whl
+$ head foo-1.0.0.dist-info/METADATA
+Metadata-Version: 2.4
+Name: foo
+Version: 1.0.0
 ```
 
 ## Configuration
@@ -145,6 +171,8 @@ You may configure the following options under `[tool.uv-dynamic-versioning]`:
 - `strict` (boolean, default: false): If true, then fail instead of falling back to 0.0.0 when there are no tags.
 - `ignore-untracked` (boolean, default: false): If true, ignore untracked files when determining whether the repository is dirty.
 - `commit-length` (integer, default: unset): Use this many characters from the start of the full commit hash.
+- `commit-prefix` (string, default: unset): Add this prefix to the commit ID when serializing. This can be helpful when an all-numeric commit would be misinterpreted. For example, "g" is a common prefix for Git commits.
+- `escape-with` (string, default: unset): When escaping, replace invalid characters with this substitution. The default is simply to remove invalid characters.
 - `fallback-version` (str, default: unset): Version to be used if an error occurs when obtaining the version, for example, there is no `.git/`. If not specified, unsuccessful version obtaining from vcs will raise an error.
 
 Simple example:

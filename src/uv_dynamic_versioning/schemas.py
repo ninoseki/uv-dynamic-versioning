@@ -65,6 +65,8 @@ class UvDynamicVersioning:
     full_commit: bool = False
     ignore_untracked: bool = False
     commit_length: int | None = None
+    commit_prefix: str | None = None
+    escape_with: str | None = None
     bump: bool | BumpConfig = False
     fallback_version: str | None = None
 
@@ -132,6 +134,14 @@ class UvDynamicVersioning:
         if self.commit_length is not None and not isinstance(self.commit_length, int):
             raise ValueError("commit-length must be an integer or None")
 
+    def _validate_commit_prefix(self):
+        if self.commit_prefix is not None and not isinstance(self.commit_prefix, str):
+            raise ValueError("commit-prefix must be a string or None")
+
+    def _validate_escape_with(self):
+        if self.escape_with is not None and not isinstance(self.escape_with, str):
+            raise ValueError("escape-with must be a string or None")
+
     def _validate_bump(self):
         if isinstance(self.bump, bool) and self.bump:
             self.bump = BumpConfig(enable=True)
@@ -168,6 +178,8 @@ class UvDynamicVersioning:
         self._validate_commit_length()
         self._validate_bump()
         self._validate_fallback_version()
+        self._validate_commit_prefix()
+        self._validate_escape_with()
 
     @cached_property
     def bump_config(self) -> BumpConfig:
