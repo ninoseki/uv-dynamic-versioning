@@ -29,11 +29,11 @@ class BumpConfig:
 
     def _validate_enable(self):
         if not isinstance(self.enable, bool):
-            raise ValueError("BumpConfig 'enable' must be a boolean")
+            raise ValueError("bump-config: enable must be a boolean")
 
     def _validate_index(self):
         if not isinstance(self.index, int):
-            raise ValueError("BumpConfig 'index' must be an integer")
+            raise ValueError("bump-config: index must be an integer")
 
     def __post_init__(self):
         """Validate the bump configuration."""
@@ -70,67 +70,67 @@ class UvDynamicVersioning:
 
     def _validate_vcs(self):
         if not isinstance(self.vcs, Vcs):
-            raise ValueError(f"Invalid VCS type: {self.vcs}")
+            raise ValueError(f"vcs is invalid - {self.vcs}")
 
     def _validate_metadata(self):
         if self.metadata is not None and not isinstance(self.metadata, bool):
-            raise ValueError("Metadata must be a boolean or None")
+            raise ValueError("metadata must be a boolean or None")
 
     def _validate_tagged_metadata(self):
         if not isinstance(self.tagged_metadata, bool):
-            raise ValueError("Tagged metadata must be a boolean")
+            raise ValueError("tagged-metadata must be a boolean")
 
     def _validate_dirty(self):
         if not isinstance(self.dirty, bool):
-            raise ValueError("Dirty must be a boolean")
+            raise ValueError("dirty must be a boolean")
 
     def _validate_latest_tag(self):
         if not isinstance(self.latest_tag, bool):
-            raise ValueError("Latest tag must be a boolean")
+            raise ValueError("latest-tag must be a boolean")
 
     def _validate_strict(self):
         if not isinstance(self.strict, bool):
-            raise ValueError("Strict must be a boolean")
+            raise ValueError("strict must be a boolean")
 
     def _validate_full_commit(self):
         if not isinstance(self.full_commit, bool):
-            raise ValueError("Full commit must be a boolean")
+            raise ValueError("full-commit must be a boolean")
 
     def _validate_ignore_untracked(self):
         if not isinstance(self.ignore_untracked, bool):
-            raise ValueError("Ignore untracked must be a boolean")
+            raise ValueError("ignore-untracked must be a boolean")
 
     def _validate_pattern(self):
         if self.pattern is not None and not isinstance(self.pattern, str):
-            raise ValueError("Pattern must be a string")
+            raise ValueError("pattern must be a string")
 
     def _validate_pattern_prefix(self):
         if self.pattern_prefix is not None and not isinstance(self.pattern_prefix, str):
-            raise ValueError("Pattern prefix must be a string or None")
+            raise ValueError("pattern-prefix must be a string or None")
 
     def _validate_format(self):
         if self.format is not None and not isinstance(self.format, str):
-            raise ValueError("Format must be a string or None")
+            raise ValueError("format must be a string or None")
 
     def _validate_format_jinja(self):
         if self.format_jinja is not None and not isinstance(self.format_jinja, str):
-            raise ValueError("Format jinja must be a string or None")
+            raise ValueError("format-jinja must be a string or None")
 
     def _validate_style(self):
         if self.style is not None and not isinstance(self.style, Style):
-            raise ValueError(f"Invalid style: {self.style}")
+            raise ValueError(f"style is invalid - {self.style}")
 
     def _validate_tag_dir(self):
         if self.tag_dir is not None and not isinstance(self.tag_dir, str):
-            raise ValueError("Tag dir must be a string")
+            raise ValueError("tag-dir must be a string")
 
     def _validate_tag_branch(self):
         if self.tag_branch is not None and not isinstance(self.tag_branch, str):
-            raise ValueError("Tag branch must be a string or None")
+            raise ValueError("tag-branch must be a string or None")
 
     def _validate_commit_length(self):
         if self.commit_length is not None and not isinstance(self.commit_length, int):
-            raise ValueError("Commit length must be an integer or None")
+            raise ValueError("commit-length must be an integer or None")
 
     def _validate_bump(self):
         if isinstance(self.bump, bool) and self.bump:
@@ -140,13 +140,13 @@ class UvDynamicVersioning:
             self.bump = BumpConfig.from_dict(self.bump)
 
         if not isinstance(self.bump, (bool, BumpConfig)):
-            raise ValueError("Bump must be a boolean or BumpConfig instance")
+            raise ValueError("bump must be a boolean or BumpConfig instance")
 
     def _validate_fallback_version(self):
         if self.fallback_version is not None and not isinstance(
             self.fallback_version, str
         ):
-            raise ValueError("Fallback version must be a string or None")
+            raise ValueError("fallback-version must be a string or None")
 
     def __post_init__(self):
         """Validate the UvDynamicVersioning configuration."""
@@ -208,7 +208,7 @@ class Tool:
             self.uv_dynamic_versioning, UvDynamicVersioning
         ):
             raise ValueError(
-                "uv_dynamic_versioning must be an instance of UvDynamicVersioning"
+                "uv-dynamic-versioning must be an instance of UvDynamicVersioning"
             )
 
     @classmethod
@@ -232,7 +232,7 @@ class Project:
 
     def _validate_tool(self):
         if not isinstance(self.tool, Tool):
-            raise ValueError("Project 'tool' must be an instance of Tool")
+            raise ValueError("tool must be an instance of Tool")
 
     def __post_init__(self):
         """Validate the Project configuration."""
@@ -246,7 +246,7 @@ class Project:
         if "tool" in validated_data and isinstance(validated_data["tool"], dict):
             validated_data["tool"] = Tool.from_dict(validated_data["tool"])
         elif "tool" not in validated_data:
-            raise ValueError("Project must have a 'tool' field")
+            raise ValueError("project must have a 'tool' field")
 
         return cls(**validated_data)
 
@@ -258,28 +258,28 @@ class MetadataHookConfig:
 
     def _validate_dependencies(self):
         if self.dependencies is not None and not isinstance(self.dependencies, list):
-            raise ValueError("Dependencies must be a list or None")
+            raise ValueError("dependencies must be a list or None")
 
         for v in self.dependencies or []:
             if not isinstance(v, str):
-                raise ValueError("All dependencies must be strings")
+                raise ValueError("dependencies must be strings")
 
     def _validate_optional_dependencies(self):
         if self.optional_dependencies is None:
             return
 
         if not isinstance(self.optional_dependencies, dict):
-            raise ValueError("Optional dependencies must be a dict or None")
+            raise ValueError("optional-dependencies must be a dict or None")
 
         for key, value in self.optional_dependencies.items():
             if not isinstance(key, str):
-                raise ValueError("Optional dependency keys must be strings")
+                raise ValueError("optional-dependency keys must be strings")
             if not isinstance(value, list):
-                raise ValueError("Optional dependency values must be lists of strings")
+                raise ValueError("optional-dependency values must be lists of strings")
 
             for v in value:
                 if not isinstance(v, str):
-                    raise ValueError("All optional dependencies must be strings")
+                    raise ValueError("optional-dependencies must be strings")
 
     def __post_init__(self):
         """Validate the MetadataHookConfig configuration."""
