@@ -1,35 +1,173 @@
 from __future__ import annotations
 
+from dataclasses import dataclass, is_dataclass
 from functools import cached_property
+from typing import Any
 
 from dunamai import Style, Vcs
-from pydantic import BaseModel, Field
 
 
-class BumpConfig(BaseModel):
+def _normalize(cls, data: dict[str, Any]):
+    """Filter dict keys to match dataclass fields and handle kebab-case to snake_case conversion with validation."""
+    if not is_dataclass(cls):
+        raise TypeError(f"{cls.__name__} is not a dataclass")
+
+    fields = {f.name: f.type for f in cls.__dataclass_fields__.values()}
+    result = {}
+    for k, v in data.items():
+        key = k.replace("-", "_")
+        if key in fields:
+            result[key] = v
+
+    return result
+
+
+@dataclass
+class BumpConfig:
     enable: bool = False
     index: int = -1
 
+    def _validate_enable(self):
+        if not isinstance(self.enable, bool):
+            raise ValueError("BumpConfig 'enable' must be a boolean")
 
-class UvDynamicVersioning(BaseModel):
+    def _validate_index(self):
+        if not isinstance(self.index, int):
+            raise ValueError("BumpConfig 'index' must be an integer")
+
+    def __post_init__(self):
+        """Validate the bump configuration."""
+        self._validate_enable()
+        self._validate_index()
+
+    @classmethod
+    def from_dict(cls, data: dict) -> BumpConfig:
+        """Create BumpConfig from dictionary with validation."""
+        validated_data = _normalize(cls, data)
+        return cls(**validated_data)
+
+
+@dataclass
+class UvDynamicVersioning:
     vcs: Vcs = Vcs.Any
     metadata: bool | None = None
-    tagged_metadata: bool = Field(default=False, alias="tagged-metadata")
+    tagged_metadata: bool = False
     dirty: bool = False
     pattern: str = "default"
-    pattern_prefix: str | None = Field(default=None, alias="pattern-prefix")
+    pattern_prefix: str | None = None
     format: str | None = None
-    format_jinja: str | None = Field(default=None, alias="format-jinja")
+    format_jinja: str | None = None
     style: Style | None = None
     latest_tag: bool = False
     strict: bool = False
-    tag_dir: str = Field(default="tags", alias="tag-dir")
-    tag_branch: str | None = Field(default=None, alias="tag-branch")
-    full_commit: bool = Field(default=False, alias="full-commit")
-    ignore_untracked: bool = Field(default=False, alias="ignore-untracked")
-    commit_length: int | None = Field(default=None, alias="commit-length")
+    tag_dir: str = "tags"
+    tag_branch: str | None = None
+    full_commit: bool = False
+    ignore_untracked: bool = False
+    commit_length: int | None = None
     bump: bool | BumpConfig = False
-    fallback_version: str | None = Field(default=None, alias="fallback-version")
+    fallback_version: str | None = None
+
+    def _validate_vcs(self):
+        if not isinstance(self.vcs, Vcs):
+            raise ValueError(f"Invalid VCS type: {self.vcs}")
+
+    def _validate_metadata(self):
+        if self.metadata is not None and not isinstance(self.metadata, bool):
+            raise ValueError("Metadata must be a boolean or None")
+
+    def _validate_tagged_metadata(self):
+        if not isinstance(self.tagged_metadata, bool):
+            raise ValueError("Tagged metadata must be a boolean")
+
+    def _validate_dirty(self):
+        if not isinstance(self.dirty, bool):
+            raise ValueError("Dirty must be a boolean")
+
+    def _validate_latest_tag(self):
+        if not isinstance(self.latest_tag, bool):
+            raise ValueError("Latest tag must be a boolean")
+
+    def _validate_strict(self):
+        if not isinstance(self.strict, bool):
+            raise ValueError("Strict must be a boolean")
+
+    def _validate_full_commit(self):
+        if not isinstance(self.full_commit, bool):
+            raise ValueError("Full commit must be a boolean")
+
+    def _validate_ignore_untracked(self):
+        if not isinstance(self.ignore_untracked, bool):
+            raise ValueError("Ignore untracked must be a boolean")
+
+    def _validate_pattern(self):
+        if self.pattern is not None and not isinstance(self.pattern, str):
+            raise ValueError("Pattern must be a string")
+
+    def _validate_pattern_prefix(self):
+        if self.pattern_prefix is not None and not isinstance(self.pattern_prefix, str):
+            raise ValueError("Pattern prefix must be a string or None")
+
+    def _validate_format(self):
+        if self.format is not None and not isinstance(self.format, str):
+            raise ValueError("Format must be a string or None")
+
+    def _validate_format_jinja(self):
+        if self.format_jinja is not None and not isinstance(self.format_jinja, str):
+            raise ValueError("Format jinja must be a string or None")
+
+    def _validate_style(self):
+        if self.style is not None and not isinstance(self.style, Style):
+            raise ValueError(f"Invalid style: {self.style}")
+
+    def _validate_tag_dir(self):
+        if self.tag_dir is not None and not isinstance(self.tag_dir, str):
+            raise ValueError("Tag dir must be a string")
+
+    def _validate_tag_branch(self):
+        if self.tag_branch is not None and not isinstance(self.tag_branch, str):
+            raise ValueError("Tag branch must be a string or None")
+
+    def _validate_commit_length(self):
+        if self.commit_length is not None and not isinstance(self.commit_length, int):
+            raise ValueError("Commit length must be an integer or None")
+
+    def _validate_bump(self):
+        if isinstance(self.bump, bool) and self.bump:
+            self.bump = BumpConfig(enable=True)
+
+        if isinstance(self.bump, dict):
+            self.bump = BumpConfig.from_dict(self.bump)
+
+        if not isinstance(self.bump, (bool, BumpConfig)):
+            raise ValueError("Bump must be a boolean or BumpConfig instance")
+
+    def _validate_fallback_version(self):
+        if self.fallback_version is not None and not isinstance(
+            self.fallback_version, str
+        ):
+            raise ValueError("Fallback version must be a string or None")
+
+    def __post_init__(self):
+        """Validate the UvDynamicVersioning configuration."""
+        self._validate_vcs()
+        self._validate_metadata()
+        self._validate_tagged_metadata()
+        self._validate_dirty()
+        self._validate_latest_tag()
+        self._validate_strict()
+        self._validate_full_commit()
+        self._validate_ignore_untracked()
+        self._validate_pattern()
+        self._validate_pattern_prefix()
+        self._validate_format()
+        self._validate_format_jinja()
+        self._validate_style()
+        self._validate_tag_dir()
+        self._validate_tag_branch()
+        self._validate_commit_length()
+        self._validate_bump()
+        self._validate_fallback_version()
 
     @cached_property
     def bump_config(self) -> BumpConfig:
@@ -37,23 +175,119 @@ class UvDynamicVersioning(BaseModel):
             return BumpConfig()
 
         if self.bump is True:
-            return BumpConfig(enable=self.bump)
+            return BumpConfig(enable=True)
 
         return self.bump
 
+    @classmethod
+    def from_dict(cls, data: dict) -> UvDynamicVersioning:
+        """Create UvDynamicVersioning from dictionary with validation."""
+        validated_data = _normalize(cls, data)
 
-class Tool(BaseModel):
-    uv_dynamic_versioning: UvDynamicVersioning | None = Field(
-        default=None, alias="uv-dynamic-versioning"
-    )
+        # Special handling for enum fields
+        if "vcs" in validated_data and isinstance(validated_data["vcs"], str):
+            validated_data["vcs"] = Vcs(validated_data["vcs"])
+
+        if "style" in validated_data and isinstance(validated_data["style"], str):
+            validated_data["style"] = Style(validated_data["style"])
+
+        # Special handling for bump field
+        if "bump" in validated_data and isinstance(validated_data["bump"], dict):
+            validated_data["bump"] = BumpConfig.from_dict(validated_data["bump"])
+
+        return cls(**validated_data)
 
 
-class Project(BaseModel):
+@dataclass
+class Tool:
+    uv_dynamic_versioning: UvDynamicVersioning | None = None
+
+    def __post_init__(self):
+        """Validate the Tool configuration."""
+        if self.uv_dynamic_versioning is not None and not isinstance(
+            self.uv_dynamic_versioning, UvDynamicVersioning
+        ):
+            raise ValueError(
+                "uv_dynamic_versioning must be an instance of UvDynamicVersioning"
+            )
+
+    @classmethod
+    def from_dict(cls, data: dict) -> Tool:
+        """Create Tool from dictionary with validation."""
+        validated_data = _normalize(cls, data)
+
+        if "uv_dynamic_versioning" in validated_data and isinstance(
+            validated_data["uv_dynamic_versioning"], dict
+        ):
+            validated_data["uv_dynamic_versioning"] = UvDynamicVersioning.from_dict(
+                validated_data["uv_dynamic_versioning"]
+            )
+
+        return cls(**validated_data)
+
+
+@dataclass
+class Project:
     tool: Tool
 
+    def _validate_tool(self):
+        if not isinstance(self.tool, Tool):
+            raise ValueError("Project 'tool' must be an instance of Tool")
 
-class MetadataHookConfig(BaseModel):
+    def __post_init__(self):
+        """Validate the Project configuration."""
+        self._validate_tool()
+
+    @classmethod
+    def from_dict(cls, data: dict) -> Project:
+        """Create Project from dictionary with validation."""
+        validated_data = _normalize(cls, data)
+
+        if "tool" in validated_data and isinstance(validated_data["tool"], dict):
+            validated_data["tool"] = Tool.from_dict(validated_data["tool"])
+        elif "tool" not in validated_data:
+            raise ValueError("Project must have a 'tool' field")
+
+        return cls(**validated_data)
+
+
+@dataclass
+class MetadataHookConfig:
     dependencies: list[str] | None = None
-    optional_dependencies: dict[str, list[str]] | None = Field(
-        default=None, alias="optional-dependencies"
-    )
+    optional_dependencies: dict[str, list[str]] | None = None
+
+    def _validate_dependencies(self):
+        if self.dependencies is not None and not isinstance(self.dependencies, list):
+            raise ValueError("Dependencies must be a list or None")
+
+        for v in self.dependencies or []:
+            if not isinstance(v, str):
+                raise ValueError("All dependencies must be strings")
+
+    def _validate_optional_dependencies(self):
+        if self.optional_dependencies is None:
+            return
+
+        if not isinstance(self.optional_dependencies, dict):
+            raise ValueError("Optional dependencies must be a dict or None")
+
+        for key, value in self.optional_dependencies.items():
+            if not isinstance(key, str):
+                raise ValueError("Optional dependency keys must be strings")
+            if not isinstance(value, list):
+                raise ValueError("Optional dependency values must be lists of strings")
+
+            for v in value:
+                if not isinstance(v, str):
+                    raise ValueError("All optional dependencies must be strings")
+
+    def __post_init__(self):
+        """Validate the MetadataHookConfig configuration."""
+        self._validate_dependencies()
+        self._validate_optional_dependencies()
+
+    @classmethod
+    def from_dict(cls, data: dict) -> MetadataHookConfig:
+        """Create MetadataHookConfig from dictionary with validation."""
+        validated_data = _normalize(cls, data)
+        return cls(**validated_data)

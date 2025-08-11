@@ -22,7 +22,7 @@ def parse(text: str):
 
 
 def validate(project: tomlkit.TOMLDocument):
-    return schemas.Project.model_validate(project.unwrap())
+    return schemas.Project.from_dict(project.unwrap())
 
 
 def _get_bypassed_version() -> str | None:

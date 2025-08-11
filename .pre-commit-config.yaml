@@ -1,6 +1,6 @@
 repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v5.0.0
+    rev: v6.0.0
     hooks:
       - id: check-added-large-files
       - id: check-toml
@@ -11,17 +11,17 @@ repos:
       - id: trailing-whitespace
 
   - repo: https://github.com/astral-sh/uv-pre-commit
-    rev: 0.6.14
+    rev: 0.8.8
     hooks:
       - id: uv-lock
 
   - repo: https://github.com/ninoseki/uv-sort
-    rev: v0.5.0
+    rev: v0.6.1
     hooks:
       - id: uv-sort
 
   - repo: https://github.com/charliermarsh/ruff-pre-commit
-    rev: v0.11.5
+    rev: v0.12.8
     hooks:
       - id: ruff
         args:
