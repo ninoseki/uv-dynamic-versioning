@@ -4,6 +4,9 @@
 
 [poetry-dynamic-versioning](https://github.com/mtkennerly/poetry-dynamic-versioning) influenced dynamic versioning tool for [uv](https://github.com/astral-sh/uv)/[hatch](https://github.com/pypa/hatch), powered by [dunamai](https://github.com/mtkennerly/dunamai/).
 
+> [!NOTE]
+> This plugin doesn't work with [the uv build backend](https://docs.astral.sh/uv/concepts/build-backend/) right now. (ref. [astral-sh/uv#14561](https://github.com/astral-sh/uv/issues/14561))
+
 ## Installation
 
 Update or add `build-system` to use `uv-dynamic-versioning`.
