@@ -23,3 +23,14 @@ A workaround is setting `fallback-version` in the configuration:
 [tool.uv-dynamic-versioning]
 fallback-version = "0.0.0"
 ```
+
+## Build caching and editable installs
+
+The `uv` cache is aggressive, and needs to be made aware that the project's metadata is dynamic, for example like this:
+
+```toml
+[tool.uv]
+cache-keys = [{ file = "pyproject.toml" }, { git = { commit = true, tags = true }}]
+```
+
+See [`uv`'s docs on dynamic metadata](https://docs.astral.sh/uv/concepts/cache/#dynamic-metadata) for more information.
