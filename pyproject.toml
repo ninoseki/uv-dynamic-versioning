@@ -26,6 +26,9 @@ dependencies = [
 Repository = "https://github.com/ninoseki/uv-dynamic-versioning/"
 Homepage = "https://github.com/ninoseki/uv-dynamic-versioning/"
 
+[project.scripts]
+uv-dynamic-versioning = "uv_dynamic_versioning.cli:main"
+
 [project.entry-points.hatch]
 uv-dynamic-versioning = "uv_dynamic_versioning.hooks"
 

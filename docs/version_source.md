@@ -5,14 +5,8 @@
 Add `tool.hatch.version` & `build-system` in your `pyproject.toml` and configure them to use `uv-dynamic-versioning`.
 
 ```toml
-[tool.hatch.version]
-source = "uv-dynamic-versioning"
-
 [build-system]
-requires = [
-  "hatchling",
-  "uv_dynamic_versioning",
-]
+requires = ["hatchling", "uv-dynamic-versioning"]
 build-backend = "hatchling.build"
 ```
 
@@ -52,6 +46,14 @@ Metadata-Version: 2.4
 Name: foo
 Version: 1.0.0
 ```
+
+> [!NOTE]
+> You can use `uv-dynamic-versioning` command to check the version to be used:
+>
+> ```bash
+> $ uvx uv-dynamic-versioning
+> 1.0.0
+> ```
 
 ## Configuration
 
