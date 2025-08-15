@@ -7,7 +7,7 @@ requires-python = ">=3.10"
 dependencies = []
 
 [build-system]
-requires = ["hatchling"]
+requires = ["hatchling", "uv-dynamic-versioning"]
 build-backend = "hatchling.build"
 
 [tool.uv-dynamic-versioning]
