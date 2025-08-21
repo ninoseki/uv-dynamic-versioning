@@ -46,6 +46,22 @@ def check_version_style(version: str, style: Style = Style.Pep440) -> None:
             raise ValueError(failure_message)
 
 
+def _get_from_file_version(config: schemas.UvDynamicVersioning) -> str | None:
+    if config.from_file is None:
+        return None
+
+    source, pattern = (config.from_file.source, config.from_file.pattern)
+    content = Path(source).read_text().strip()
+
+    if pattern is None:
+        return content
+
+    result = re.search(pattern, content, re.MULTILINE)
+    if result is None:
+        raise ValueError(f"File '{source}' did not contain a match for '{pattern}'")
+    return str(result.group(1))
+
+
 def _get_version(config: schemas.UvDynamicVersioning) -> Version:
     try:
         return Version.from_vcs(
@@ -70,6 +86,10 @@ def get_version(config: schemas.UvDynamicVersioning) -> tuple[str, Version]:
     bypassed = _get_bypassed_version()
     if bypassed:
         return bypassed, Version.parse(bypassed)
+
+    from_file = _get_from_file_version(config)
+    if from_file:
+        return from_file, Version.parse(from_file)
 
     version = _get_version(config)
 

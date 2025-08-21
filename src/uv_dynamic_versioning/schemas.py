@@ -48,6 +48,30 @@ class BumpConfig:
 
 
 @dataclass
+class FromFile:
+    source: str
+    pattern: str | None = None
+
+    def _validate_source(self):
+        if not isinstance(self.source, str):
+            raise ValueError("source must be a string")
+
+    def _validate_pattern(self):
+        if self.pattern is not None and not isinstance(self.pattern, str):
+            raise ValueError("pattern must be a string or None")
+
+    def __post_init__(self):
+        self._validate_source()
+        self._validate_pattern()
+
+    @classmethod
+    def from_dict(cls, data: dict) -> FromFile:
+        """Create FromFile from dictionary with validation."""
+        validated_data = _normalize(cls, data)
+        return cls(**validated_data)
+
+
+@dataclass
 class UvDynamicVersioning:
     vcs: Vcs = Vcs.Any
     metadata: bool | None = None
@@ -69,6 +93,7 @@ class UvDynamicVersioning:
     escape_with: str | None = None
     bump: bool | BumpConfig = False
     fallback_version: str | None = None
+    from_file: FromFile | None = None
 
     def _validate_vcs(self):
         if not isinstance(self.vcs, Vcs):
@@ -206,6 +231,13 @@ class UvDynamicVersioning:
         # Special handling for bump field
         if "bump" in validated_data and isinstance(validated_data["bump"], dict):
             validated_data["bump"] = BumpConfig.from_dict(validated_data["bump"])
+
+        if "from_file" in validated_data and isinstance(
+            validated_data["from_file"], dict
+        ):
+            validated_data["from_file"] = FromFile.from_dict(
+                validated_data["from_file"]
+            )
 
         return cls(**validated_data)
 
