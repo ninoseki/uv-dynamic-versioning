@@ -176,6 +176,16 @@ You may configure the following options under `[tool.uv-dynamic-versioning]`:
 - `commit-prefix` (string, default: unset): Add this prefix to the commit ID when serializing. This can be helpful when an all-numeric commit would be misinterpreted. For example, "g" is a common prefix for Git commits.
 - `escape-with` (string, default: unset): When escaping, replace invalid characters with this substitution. The default is simply to remove invalid characters.
 - `fallback-version` (str, default: unset): Version to be used if an error occurs when obtaining the version, for example, there is no `.git/`. If not specified, unsuccessful version obtaining from vcs will raise an error.
+- `from-file`:
+  This section lets you read the version from a file instead of the VCS.
+  - `source` (string):
+    If set, read the version from this file.
+    It must be a path relative to the location of pyproject.toml.
+    By default, the plugin will read the entire content of the file,
+    without leading and trailing whitespace.
+  - `pattern` (string):
+    If set, use this regular expression to extract the version from the file.
+    The first capture group must contain the version.
 
 Simple example:
 
