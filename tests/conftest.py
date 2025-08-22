@@ -14,5 +14,7 @@ def repo():
 @pytest.fixture
 def semver_tag(repo: Repo):
     tag = repo.create_tag("v1.0.0")
-    yield tag
-    repo.delete_tag(tag)
+    try:
+        yield tag
+    finally:
+        repo.delete_tag(tag)

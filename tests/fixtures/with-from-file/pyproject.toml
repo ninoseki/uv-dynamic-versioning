@@ -10,5 +10,5 @@ dependencies = []
 requires = ["hatchling", "uv-dynamic-versioning"]
 build-backend = "hatchling.build"
 
-[tool.uv-dynamic-versioning]
-format-jinja = """{{- base }}.dev{{ distance }}+g{{commit}}"""
+[tool.uv-dynamic-versioning.from-file]
+source = "tests/fixtures/with-from-file/version.txt"

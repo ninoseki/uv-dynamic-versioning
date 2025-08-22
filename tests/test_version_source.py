@@ -108,3 +108,11 @@ def test_get_version_with_invalid_combination_of_format_jinja_and_style():
     assert config.style == Style.Pep440
     with pytest.raises(ValueError):
         get_version(config)
+
+
+def test_from_file(semver_tag: TagReference, mock_root: PropertyMock):
+    source = DynamicVersionSource(str(semver_tag.repo.working_dir), {})
+    mock_root.return_value = "tests/fixtures/with-from-file/"
+
+    version: str = source.get_version_data()["version"]
+    assert version == "1.0.0"
