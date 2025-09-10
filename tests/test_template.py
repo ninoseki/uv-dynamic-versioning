@@ -77,6 +77,11 @@ def test_when_rendering_version_with_escaped_branch_then_returns_escaped_branch(
         == "featurenewbranch"
     )
 
+    assert (
+        render_template("{{- branch_escaped }}", version=version, escape_with=".")
+        == "feature.new.branch"
+    )
+
 
 def test_when_rendering_version_with_dirty_flag_then_returns_dirty_status(
     version: Version,
