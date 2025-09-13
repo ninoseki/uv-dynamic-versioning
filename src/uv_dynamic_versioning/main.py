@@ -100,7 +100,7 @@ def get_version(config: schemas.UvDynamicVersioning) -> tuple[str, Version]:
             else version
         )
         serialized = render_template(
-            config.format_jinja, version=updated, escape_with=config.escape_with
+            config.format_jinja, version=updated, config=config
         )
         if config.style:
             check_version_style(serialized, config.style)

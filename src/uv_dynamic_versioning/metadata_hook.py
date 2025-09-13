@@ -35,7 +35,7 @@ class DependenciesMetadataHook(BasePlugin, MetadataHookInterface):
             return None
 
         return [
-            render_template(dep, version=self.version)
+            render_template(dep, version=self.version, config=self.project_config)
             for dep in self.plugin_config.dependencies
         ]
 
@@ -44,7 +44,10 @@ class DependenciesMetadataHook(BasePlugin, MetadataHookInterface):
             return None
 
         return {
-            name: [render_template(dep, version=self.version) for dep in deps]
+            name: [
+                render_template(dep, version=self.version, config=self.project_config)
+                for dep in deps
+            ]
             for name, deps in self.plugin_config.optional_dependencies.items()
         }
 

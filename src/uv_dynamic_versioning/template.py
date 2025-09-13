@@ -14,6 +14,8 @@ from dunamai import (
     serialize_semver,
 )
 
+from . import schemas
+
 
 def base_part(base: str, index: int) -> int:
     parts = base.split(".")
@@ -28,9 +30,8 @@ def base_part(base: str, index: int) -> int:
 def _escape_branch(value: str | None, escape_with: str | None) -> str | None:
     if value is None:
         return None
-    if escape_with is None:
-        escape_with = ""
-    return re.sub(r"[^a-zA-Z0-9]", escape_with, value)
+
+    return re.sub(r"[^a-zA-Z0-9]", escape_with or "", value)
 
 
 def _format_timestamp(value: datetime | None) -> str | None:
@@ -41,7 +42,7 @@ def _format_timestamp(value: datetime | None) -> str | None:
 
 
 def render_template(
-    template: str, *, version: Version, escape_with: str | None = None
+    template: str, *, version: Version, config: schemas.UvDynamicVersioning
 ) -> str:
     default_context = {
         "version": version,
@@ -53,7 +54,7 @@ def render_template(
         "dirty": version.dirty,
         "branch": version.branch,
         "tagged_metadata": version.tagged_metadata,
-        "branch_escaped": _escape_branch(version.branch, escape_with),
+        "branch_escaped": _escape_branch(version.branch, config.escape_with),
         "timestamp": _format_timestamp(version.timestamp),
         "major": base_part(version.base, 0),
         "minor": base_part(version.base, 1),
