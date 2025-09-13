@@ -99,7 +99,9 @@ def get_version(config: schemas.UvDynamicVersioning) -> tuple[str, Version]:
             if config.bump_config.enable and version.distance > 0
             else version
         )
-        serialized = render_template(config.format_jinja, version=updated)
+        serialized = render_template(
+            config.format_jinja, version=updated, config=config
+        )
         if config.style:
             check_version_style(serialized, config.style)
     else:

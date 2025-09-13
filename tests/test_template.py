@@ -1,8 +1,11 @@
+from __future__ import annotations
+
 from datetime import datetime, timezone
 
 import pytest
 from dunamai import Version
 
+from uv_dynamic_versioning import schemas
 from uv_dynamic_versioning.template import render_template
 
 
@@ -19,73 +22,95 @@ def version():
     )
 
 
-def test_when_rendering_basic_version_then_returns_base_version(version: Version):
-    assert render_template("{{- base }}", version=version) == "1.0.0"
+@pytest.fixture
+def config():
+    return schemas.UvDynamicVersioning()
 
 
-def test_when_bumping_version_then_returns_bumped_version(version: Version):
+def test_when_rendering_basic_version_then_returns_base_version(
+    version: Version, config: schemas.UvDynamicVersioning
+):
+    assert render_template("{{- base }}", version=version, config=config) == "1.0.0"
+
+
+def test_when_bumping_version_then_returns_bumped_version(
+    version: Version, config: schemas.UvDynamicVersioning
+):
     version.distance = 2
     version.revision = 1
     assert (
-        render_template("{{- base }}+r{{- revision }}", version=version) == "1.0.0+r1"
+        render_template("{{- base }}+r{{- revision }}", version=version, config=config)
+        == "1.0.0+r1"
     )
 
 
 def test_when_rendering_version_with_stage_and_revision_then_returns_formatted_version(
     version: Version,
+    config: schemas.UvDynamicVersioning,
 ):
     assert (
-        render_template("{{- base }}{{- stage }}{{- revision }}", version=version)
+        render_template(
+            "{{- base }}{{- stage }}{{- revision }}", version=version, config=config
+        )
         == "1.0.0alpha1"
     )
 
 
 def test_when_rendering_version_with_commit_and_branch_then_returns_formatted_version(
     version: Version,
+    config: schemas.UvDynamicVersioning,
 ):
     assert (
-        render_template("{{- commit }}-{{- branch }}", version=version)
+        render_template("{{- commit }}-{{- branch }}", version=version, config=config)
         == "message-main"
     )
 
 
 def test_when_rendering_version_with_timestamp_then_returns_formatted_timestamp(
     version: Version,
+    config: schemas.UvDynamicVersioning,
 ):
-    result = render_template("{{- timestamp }}", version=version)
+    result = render_template("{{- timestamp }}", version=version, config=config)
     assert result == "20250401120000"
 
 
 def test_when_rendering_version_with_individual_parts_then_returns_formatted_version(
     version: Version,
+    config: schemas.UvDynamicVersioning,
 ):
     assert (
-        render_template("{{- major }}.{{- minor }}.{{- patch }}", version=version)
+        render_template(
+            "{{- major }}.{{- minor }}.{{- patch }}", version=version, config=config
+        )
         == "1.0.0"
     )
 
 
+@pytest.mark.parametrize(
+    "escape_with, expected", [(None, "featurenewbranch"), (".", "feature.new.branch")]
+)
 def test_when_rendering_version_with_escaped_branch_then_returns_escaped_branch(
     version: Version,
+    config: schemas.UvDynamicVersioning,
+    escape_with: str | None,
+    expected: str,
 ):
+    config.escape_with = escape_with
     version.branch = "feature/new-branch"
     assert (
-        render_template(
-            "{{- branch_escaped }}",
-            version=version,
-        )
-        == "featurenewbranch"
+        render_template("{{- branch_escaped }}", version=version, config=config)
+        == expected
     )
 
 
 def test_when_rendering_version_with_dirty_flag_then_returns_dirty_status(
     version: Version,
+    config: schemas.UvDynamicVersioning,
 ):
     version.dirty = True
     assert (
         render_template(
-            "{{- 'dirty' if dirty else 'clean' }}",
-            version=version,
+            "{{- 'dirty' if dirty else 'clean' }}", version=version, config=config
         )
         == "dirty"
     )
@@ -94,18 +119,24 @@ def test_when_rendering_version_with_dirty_flag_then_returns_dirty_status(
 def test_when_rendering_version_with_environment_variables_then_returns_env_value(
     version: Version,
     monkeypatch: pytest.MonkeyPatch,
+    config: schemas.UvDynamicVersioning,
 ):
     monkeypatch.setenv("TEST_VAR", "test_value")
-    assert render_template("{{ env.TEST_VAR }}", version=version) == "test_value"
+    assert (
+        render_template("{{ env.TEST_VAR }}", version=version, config=config)
+        == "test_value"
+    )
 
 
 def test_when_rendering_version_with_serialization_functions_then_returns_serialized_version(
     version: Version,
+    config: schemas.UvDynamicVersioning,
 ):
     assert (
         render_template(
             "{{ serialize_pep440(base, stage, revision) }}",
             version=version,
+            config=config,
         )
         == "1.0.0a1"
     )
@@ -113,11 +144,13 @@ def test_when_rendering_version_with_serialization_functions_then_returns_serial
 
 def test_when_rendering_version_with_serialization_functions_and_bump_then_returns_bumped_serialized_version(
     version: Version,
+    config: schemas.UvDynamicVersioning,
 ):
     assert (
         render_template(
             "{{ serialize_pep440(bump_version(base), stage, revision) }}",
             version=version,
+            config=config,
         )
         == "1.0.1a1"
     )
@@ -125,6 +158,10 @@ def test_when_rendering_version_with_serialization_functions_and_bump_then_retur
 
 def test_when_rendering_version_with_tagged_metadata_then_returns_metadata(
     version: Version,
+    config: schemas.UvDynamicVersioning,
 ):
     version.tagged_metadata = "build123"
-    assert render_template("{{ tagged_metadata }}", version=version) == "build123"
+    assert (
+        render_template("{{ tagged_metadata }}", version=version, config=config)
+        == "build123"
+    )
