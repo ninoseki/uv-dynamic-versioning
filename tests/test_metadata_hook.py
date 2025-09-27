@@ -6,7 +6,7 @@ from git import Repo, TagReference
 
 from uv_dynamic_versioning.metadata_hook import DependenciesMetadataHook
 
-from .utils import with_empty_commit
+from .utils import dirty
 
 
 def test_without_dynamic_dependencies(semver_tag: TagReference):
@@ -79,8 +79,9 @@ def test_render_dependencies_with_dirty(
 
     hook = DependenciesMetadataHook(str(semver_tag.repo.working_dir), {})
 
-    with with_empty_commit(repo):
+    with dirty(repo):
+        assert repo.is_dirty()
         dependencies = hook.render_dependencies() or []
 
     assert len(dependencies) == 1
-    assert dependencies[0].endswith(".dirty")
+    assert dependencies[0].endswith("+dirty")

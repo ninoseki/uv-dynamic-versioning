@@ -9,7 +9,7 @@ from git import Repo, TagReference
 from uv_dynamic_versioning import schemas
 from uv_dynamic_versioning.version_source import DynamicVersionSource, get_version
 
-from .utils import with_empty_commit
+from .utils import dirty, empty_commit
 
 
 @pytest.fixture
@@ -41,7 +41,7 @@ def test_with_bump(semver_tag: TagReference, mock_root: PropertyMock, repo: Repo
     source = DynamicVersionSource(str(semver_tag.repo.working_dir), {})
     mock_root.return_value = "tests/fixtures/with-bump/"
 
-    with with_empty_commit(repo):
+    with empty_commit(repo):
         version: str = source.get_version_data()["version"]
 
     assert version.startswith("1.0.1.")
@@ -51,10 +51,10 @@ def test_with_dirty(semver_tag: TagReference, mock_root: PropertyMock, repo: Rep
     source = DynamicVersionSource(str(semver_tag.repo.working_dir), {})
     mock_root.return_value = "tests/fixtures/with-dirty/"
 
-    with with_empty_commit(repo):
+    with dirty(repo):
         version: str = source.get_version_data()["version"]
 
-    assert version.endswith(".dirty")
+    assert version.endswith("+dirty")
 
 
 def test_with_jinja2_format(semver_tag: TagReference, mock_root: PropertyMock):
