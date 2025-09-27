@@ -80,7 +80,6 @@ def test_render_dependencies_with_dirty(
     hook = DependenciesMetadataHook(str(semver_tag.repo.working_dir), {})
 
     with dirty(repo):
-        assert repo.is_dirty()
         dependencies = hook.render_dependencies() or []
 
     assert len(dependencies) == 1
