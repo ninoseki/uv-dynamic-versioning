@@ -47,6 +47,14 @@ def test_with_bump(repo: Repo, semver_tag: TagReference, mock_root: PropertyMock
         repo.git.execute(["git", "reset", "--soft", "HEAD~1"])
 
 
+def test_with_dirty(repo: Repo, semver_tag: TagReference, mock_root: PropertyMock):
+    source = DynamicVersionSource(str(semver_tag.repo.working_dir), {})
+    mock_root.return_value = "tests/fixtures/with-dirty/"
+
+    version: str = source.get_version_data()["version"]
+    assert version.endswith("+dirty")
+
+
 def test_with_jinja2_format(semver_tag: TagReference, mock_root: PropertyMock):
     source = DynamicVersionSource(str(semver_tag.repo.working_dir), {})
     mock_root.return_value = "tests/fixtures/with-jinja-format/"

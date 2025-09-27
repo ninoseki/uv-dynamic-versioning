@@ -25,9 +25,6 @@ class DependenciesMetadataHook(BasePlugin, MetadataHookInterface):
     @cached_property
     def version(self) -> Version:
         _, version = get_version(self.project_config)
-        if self.project_config.bump:
-            return version.bump(smart=True)
-
         return version
 
     def render_dependencies(self) -> list[str] | None:

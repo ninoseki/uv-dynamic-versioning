@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import os
 import re
+from functools import partial
 from pathlib import Path
 
 import tomlkit
@@ -64,7 +65,7 @@ def _get_from_file_version(config: schemas.UvDynamicVersioning) -> str | None:
 
 def _get_version(config: schemas.UvDynamicVersioning) -> Version:
     try:
-        return Version.from_vcs(
+        version = Version.from_vcs(
             config.vcs,
             latest_tag=config.latest_tag,
             strict=config.strict,
@@ -76,6 +77,20 @@ def _get_version(config: schemas.UvDynamicVersioning) -> Version:
             pattern_prefix=config.pattern_prefix,
             commit_length=config.commit_length,
         )
+        # FIXME: a dirty hack to override serialize method
+        #        __str__ uses self.serialize() internally,
+        #        so we need to override it to apply config based parameters in the hooks
+        version.serialize = partial(  # type: ignore
+            version.serialize,
+            metadata=config.metadata,
+            style=config.style,
+            dirty=config.dirty,
+            tagged_metadata=config.tagged_metadata,
+            format=config.format,
+            escape_with=config.escape_with,
+            commit_prefix=config.commit_prefix,
+        )
+        return version
     except RuntimeError as e:
         if fallback_version := config.fallback_version:
             return Version(fallback_version)
@@ -110,14 +125,6 @@ def get_version(config: schemas.UvDynamicVersioning) -> tuple[str, Version]:
             if config.bump_config.enable
             else version
         )
-        serialized = updated.serialize(
-            metadata=config.metadata,
-            style=config.style,
-            dirty=config.dirty,
-            tagged_metadata=config.tagged_metadata,
-            format=config.format,
-            escape_with=config.escape_with,
-            commit_prefix=config.commit_prefix,
-        )
+        serialized = updated.serialize()
 
     return (serialized, updated)
