@@ -2,9 +2,11 @@ from collections.abc import Generator
 from unittest.mock import PropertyMock, patch
 
 import pytest
-from git import TagReference
+from git import Repo, TagReference
 
 from uv_dynamic_versioning.metadata_hook import DependenciesMetadataHook
+
+from .utils import with_empty_commit
 
 
 def test_without_dynamic_dependencies(semver_tag: TagReference):
@@ -67,6 +69,7 @@ def test_render_dependencies_with_dirty(
     semver_tag: TagReference,
     mock_config: PropertyMock,
     mock_root: PropertyMock,
+    repo: Repo,
 ):
     mock_config.return_value = {
         "dependencies": ["foo=={{ version }}"],
@@ -75,6 +78,9 @@ def test_render_dependencies_with_dirty(
     mock_root.return_value = "tests/fixtures/with-dirty/"
 
     hook = DependenciesMetadataHook(str(semver_tag.repo.working_dir), {})
-    dependencies = hook.render_dependencies() or []
+
+    with with_empty_commit(repo):
+        dependencies = hook.render_dependencies() or []
+
     assert len(dependencies) == 1
-    assert dependencies[0].endswith("+dirty")
+    assert dependencies[0].endswith(".dirty")
