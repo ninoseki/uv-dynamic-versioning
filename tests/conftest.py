@@ -6,9 +6,22 @@ from git import Repo
 PROJECT_ROOT = Path().resolve()
 
 
-@pytest.fixture
+@pytest.fixture(scope="session")
 def repo():
-    return Repo.init(PROJECT_ROOT)
+    return Repo.init()
+
+
+@pytest.fixture(scope="session", autouse=True)
+def clear_tags(repo: Repo):
+    saved_tags = {tag.name: tag.commit.hexsha for tag in repo.tags}
+
+    for tag in repo.tags:
+        repo.delete_tag(tag)
+
+    yield
+
+    for name, ref in saved_tags.items():
+        repo.create_tag(name, ref)
 
 
 @pytest.fixture
