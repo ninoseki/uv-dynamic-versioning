@@ -149,6 +149,7 @@ You may configure the following options under `[tool.uv-dynamic-versioning]`:
   ```
 
 - `style` (string, default: unset): One of: `pep440`, `semver`, `pvp`. These are pre-configured output formats. If you set both a `style` and a `format`, then the format will be validated against the style's rules. If `style` is unset, the default output format will follow PEP 440, but a custom `format` will only be validated if `style` is set explicitly.
+  Regardless of the style you choose, the dynamic version is ultimately subject to Hatchling's validation as well, and Hatchling is designed around PEP 440 versions. Hatchling can usually understand SemVer/etc input, but sometimes, Hatchling may reject an otherwise valid version format.
 - `latest-tag` (boolean, default: false): If true, then only check the latest tag for a version, rather than looking through all the tags until a suitable one is found to match the `pattern`.
 - `bump` (boolean or table, default: false): If enabled, then increment the last part of the version `base` by 1, unless the `stage` is set, in which case increment the `revision` by 1 or set it to a default of 2 if there was no `revision`. Does nothing when on a commit with a version tag. One of:
 
@@ -187,12 +188,33 @@ You may configure the following options under `[tool.uv-dynamic-versioning]`:
     If set, use this regular expression to extract the version from the file.
     The first capture group must contain the version.
 
-Simple example:
+### Examples
+
+Default (no `tool.uv-dynamic-versioning` in `pyproject.toml`):
+
+```bash
+$ git tag v1.0.0
+$ uv build
+Building source distribution...
+Building wheel from source distribution...
+Successfully built dist/foo-1.0.0.tar.gz
+Successfully built dist/foo-1.0.0-py3-none-any.whl
+```
+
+With `pattern`:
 
 ```toml
 [tool.uv-dynamic-versioning]
-vcs = "git"
-style = "semver"
+pattern = "default-unprefixed"
+```
+
+```bash
+$ git tag 1.0.0
+$ uv build
+Building source distribution...
+Building wheel from source distribution...
+Successfully built dist/foo-1.0.0.tar.gz
+Successfully built dist/foo-1.0.0-py3-none-any.whl
 ```
 
 ## Environment Variables
