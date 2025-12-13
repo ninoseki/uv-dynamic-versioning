@@ -47,7 +47,9 @@ def test_without_dependencies_in_config(
         )
 
 
-def test_render_dependencies(semver_tag: TagReference, mock_config: PropertyMock):
+def test_render_dependencies_with_semver(
+    semver_tag: TagReference, mock_config: PropertyMock
+):
     mock_config.return_value = {
         "dependencies": ["foo=={{ version }}"],
     }
@@ -84,3 +86,67 @@ def test_render_dependencies_with_dirty(
 
     assert len(dependencies) == 1
     assert dependencies[0].endswith("+dirty")
+
+
+def test_render_dependencies_with_prerelease_tag(
+    prerelease_tag: TagReference,
+    mock_config: PropertyMock,
+):
+    mock_config.return_value = {
+        "dependencies": ["foo=={{ version }}"],
+    }
+
+    hook = DependenciesMetadataHook(str(prerelease_tag.repo.working_dir), {})
+
+    dependencies = hook.render_dependencies() or []
+
+    assert len(dependencies) == 1
+    assert dependencies[0].endswith("a1")
+
+
+def test_render_dependencies_with_bypass_with_semver_tag(
+    semver_tag: TagReference,
+    mock_config: PropertyMock,
+):
+    mock_config.return_value = {
+        "dependencies": ["foo=={{ version }}"],
+    }
+
+    hook = DependenciesMetadataHook(str(semver_tag.repo.working_dir), {})
+
+    dependencies = hook.render_dependencies() or []
+
+    assert len(dependencies) == 1
+    assert dependencies[0] == "foo==1.0.0"
+
+
+def test_render_dependencies_with_bypass_and_prerelease_tag(
+    prerelease_tag: TagReference,
+    mock_config: PropertyMock,
+):
+    mock_config.return_value = {
+        "dependencies": ["foo=={{ version }}"],
+    }
+
+    hook = DependenciesMetadataHook(str(prerelease_tag.repo.working_dir), {})
+
+    dependencies = hook.render_dependencies() or []
+
+    assert len(dependencies) == 1
+    assert dependencies[0] == "foo==1.0.0a1"
+
+
+def test_render_dependencies_with_bypass_and_dev_tag(
+    dev_tag: TagReference,
+    mock_config: PropertyMock,
+):
+    mock_config.return_value = {
+        "dependencies": ["foo=={{ version }}"],
+    }
+
+    hook = DependenciesMetadataHook(str(dev_tag.repo.working_dir), {})
+
+    dependencies = hook.render_dependencies() or []
+
+    assert len(dependencies) == 1
+    assert dependencies[0] == "foo==1.0.0.dev1"
