@@ -63,9 +63,28 @@ def _get_from_file_version(config: schemas.UvDynamicVersioning) -> str | None:
     return str(result.group(1))
 
 
+def _patch_version_serialize(
+    version: Version, config: schemas.UvDynamicVersioning
+) -> Version:
+    # FIXME: a dirty hack to override serialize method
+    #        __str__ uses self.serialize() internally,
+    #        so we need to override it to apply config based parameters in the hooks
+    version.serialize = partial(  # type: ignore
+        version.serialize,
+        metadata=config.metadata,
+        style=config.style,
+        dirty=config.dirty,
+        tagged_metadata=config.tagged_metadata,
+        format=config.format,
+        escape_with=config.escape_with,
+        commit_prefix=config.commit_prefix,
+    )
+    return version
+
+
 def _get_version(config: schemas.UvDynamicVersioning) -> Version:
     try:
-        version = Version.from_vcs(
+        return Version.from_vcs(
             config.vcs,
             latest_tag=config.latest_tag,
             strict=config.strict,
@@ -77,20 +96,6 @@ def _get_version(config: schemas.UvDynamicVersioning) -> Version:
             pattern_prefix=config.pattern_prefix,
             commit_length=config.commit_length,
         )
-        # FIXME: a dirty hack to override serialize method
-        #        __str__ uses self.serialize() internally,
-        #        so we need to override it to apply config based parameters in the hooks
-        version.serialize = partial(  # type: ignore
-            version.serialize,
-            metadata=config.metadata,
-            style=config.style,
-            dirty=config.dirty,
-            tagged_metadata=config.tagged_metadata,
-            format=config.format,
-            escape_with=config.escape_with,
-            commit_prefix=config.commit_prefix,
-        )
-        return version
     except RuntimeError as e:
         if fallback_version := config.fallback_version:
             return Version(fallback_version)
@@ -100,13 +105,16 @@ def _get_version(config: schemas.UvDynamicVersioning) -> Version:
 def get_version(config: schemas.UvDynamicVersioning) -> tuple[str, Version]:
     bypassed = _get_bypassed_version()
     if bypassed:
-        return bypassed, Version.parse(bypassed)
+        parsed = Version.parse(bypassed, pattern=config.pattern)
+        return bypassed, _patch_version_serialize(parsed, config)
 
     from_file = _get_from_file_version(config)
     if from_file:
-        return from_file, Version.parse(from_file)
+        parsed = Version.parse(from_file, pattern=config.pattern)
+        return from_file, _patch_version_serialize(parsed, config)
 
-    version = _get_version(config)
+    got = _get_version(config)
+    version = _patch_version_serialize(got, config)
 
     if config.format_jinja:
         updated = (
