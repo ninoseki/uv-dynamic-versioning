@@ -4,6 +4,7 @@ import contextlib
 import os
 import re
 from datetime import datetime
+from importlib import import_module
 
 import jinja2
 from dunamai import (
@@ -65,4 +66,14 @@ def render_template(
         "serialize_pvp": serialize_pvp,
         "serialize_semver": serialize_semver,
     }
-    return jinja2.Template(template).render(**default_context)
+
+    custom_context = {}
+    if config.format_jinja_imports:
+        for entry in config.format_jinja_imports:
+            module = import_module(entry.module)
+            if entry.item is not None:
+                custom_context[entry.item] = getattr(module, entry.item)
+            else:
+                custom_context[entry.module] = module
+
+    return jinja2.Template(template).render(**default_context, **custom_context)

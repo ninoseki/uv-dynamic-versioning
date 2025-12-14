@@ -60,3 +60,32 @@ def test_get_version_with_invalid_combination_of_format_jinja_and_style():
     assert config.style == Style.Pep440
     with pytest.raises(ValueError):
         get_version(config)
+
+
+def test_get_version_with_format_jinja_imports_with_module_only():
+    config = schemas.UvDynamicVersioning.from_dict(
+        {
+            "format-jinja": "{{ math.pow(2, 2) }}",
+            "format-jinja-imports": [
+                {
+                    "module": "math",
+                }
+            ],
+        }
+    )
+    assert get_version(config)[0] == "4.0"
+
+
+def test_get_version_with_format_jinja_imports_with_item():
+    config = schemas.UvDynamicVersioning.from_dict(
+        {
+            "format-jinja": "{{ pow(2, 2) }}",
+            "format-jinja-imports": [
+                {
+                    "module": "math",
+                    "item": "pow",
+                }
+            ],
+        }
+    )
+    assert get_version(config)[0] == "4.0"

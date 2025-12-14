@@ -148,6 +148,26 @@ You may configure the following options under `[tool.uv-dynamic-versioning]`:
   """
   ```
 
+- `format-jinja-imports` (array of tables, default: empty):
+  This defines additional things to import and make available to the `format-jinja` template.
+  Each table must contain a `module` key and may also contain an `item` key. Consider this example:
+
+  ```toml
+  format-jinja-imports = [
+      { module = "foo" },
+      { module = "bar", item = "baz" },
+  ]
+  ```
+
+  This is roughly equivalent to:
+
+  ```python
+  import foo
+  from bar import baz
+  ```
+
+  `foo` and `baz` would then become available in the Jinja formatting.
+
 - `style` (string, default: unset): One of: `pep440`, `semver`, `pvp`. These are pre-configured output formats. If you set both a `style` and a `format`, then the format will be validated against the style's rules. If `style` is unset, the default output format will follow PEP 440, but a custom `format` will only be validated if `style` is set explicitly.
   Regardless of the style you choose, the dynamic version is ultimately subject to Hatchling's validation as well, and Hatchling is designed around PEP 440 versions. Hatchling can usually understand SemVer/etc input, but sometimes, Hatchling may reject an otherwise valid version format.
 - `latest-tag` (boolean, default: false): If true, then only check the latest tag for a version, rather than looking through all the tags until a suitable one is found to match the `pattern`.
