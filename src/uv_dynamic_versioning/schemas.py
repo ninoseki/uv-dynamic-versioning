@@ -72,6 +72,29 @@ class FromFile:
 
 
 @dataclass
+class FormatJinjaImport:
+    module: str
+    item: str | None = None
+
+    def _validate_module(self):
+        if not isinstance(self.module, str):
+            raise ValueError("module must be a string")
+
+    def _validate_item(self):
+        if self.item is not None and not isinstance(self.item, str):
+            raise ValueError("item must be a string or None")
+
+    def __post_init__(self):
+        self._validate_module()
+        self._validate_item()
+
+    @classmethod
+    def from_dict(cls, data: dict) -> FormatJinjaImport:
+        validated_data = _normalize(cls, data)
+        return cls(**validated_data)
+
+
+@dataclass
 class UvDynamicVersioning:
     vcs: Vcs = Vcs.Any
     metadata: bool | None = None
@@ -81,6 +104,7 @@ class UvDynamicVersioning:
     pattern_prefix: str | None = None
     format: str | None = None
     format_jinja: str | None = None
+    format_jinja_imports: list[FormatJinjaImport] | None = None
     style: Style | None = None
     latest_tag: bool = False
     strict: bool = False
@@ -143,6 +167,17 @@ class UvDynamicVersioning:
         if self.format_jinja is not None and not isinstance(self.format_jinja, str):
             raise ValueError("format-jinja must be a string or None")
 
+    def _validate_format_jinja_imports(self):
+        if self.format_jinja_imports is not None:
+            if not isinstance(self.format_jinja_imports, list):
+                raise ValueError("format-jinja-imports must be a list or None")
+
+            for item in self.format_jinja_imports:
+                if not isinstance(item, FormatJinjaImport):
+                    raise ValueError(
+                        "format-jinja-imports must contain only FormatJinjaImport instances"
+                    )
+
     def _validate_style(self):
         if self.style is not None and not isinstance(self.style, Style):
             raise ValueError(f"style is invalid - {self.style}")
@@ -197,6 +232,7 @@ class UvDynamicVersioning:
         self._validate_pattern_prefix()
         self._validate_format()
         self._validate_format_jinja()
+        self._validate_format_jinja_imports()
         self._validate_style()
         self._validate_tag_dir()
         self._validate_tag_branch()
@@ -238,6 +274,15 @@ class UvDynamicVersioning:
             validated_data["from_file"] = FromFile.from_dict(
                 validated_data["from_file"]
             )
+
+        if "format_jinja_imports" in validated_data and isinstance(
+            validated_data["format_jinja_imports"], list
+        ):
+            validated_data["format_jinja_imports"] = [
+                FormatJinjaImport.from_dict(item)
+                for item in validated_data["format_jinja_imports"]
+                if isinstance(item, dict)
+            ]
 
         return cls(**validated_data)
 
