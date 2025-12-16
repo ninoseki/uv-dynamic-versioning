@@ -10,7 +10,7 @@ updates:
   - package-ecosystem: uv
 ```
 
-This is because Dependabot does `uv lock --upgrade-package {package_name}` and it invokes a build. The build fails with the following RuntimeError:
+This is because Dependabot does `uv lock --upgrade-package {package_name}` and it invokes a build. The build may fail with the following RuntimeError:
 
 ```text
 RuntimeError: Error getting the version from source
