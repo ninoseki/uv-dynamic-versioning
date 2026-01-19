@@ -3,7 +3,7 @@ name = "uv-dynamic-versioning"
 dynamic = ["version"]
 description = "Dynamic versioning based on VCS tags for uv/hatch project"
 readme = "README.md"
-requires-python = ">=3.9,<4.0"
+requires-python = ">=3.10,<4.0"
 license = { file = "LICENSE" }
 keywords = ["uv", "hatch"]
 classifiers = [
@@ -13,6 +13,8 @@ classifiers = [
   "Programming Language :: Python :: 3.10",
   "Programming Language :: Python :: 3.11",
   "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+  "Programming Language :: Python :: 3.14",
   "Framework :: Hatch",
 ]
 dependencies = [
