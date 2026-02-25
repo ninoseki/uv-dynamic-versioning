@@ -68,7 +68,7 @@ You may configure the following options under `[tool.uv-dynamic-versioning]`:
 - `metadata` (boolean, default: unset): If true, include the commit hash in the version, and also include a dirty flag if `dirty` is true. If unset, metadata will only be included if you are on a commit without a version tag. This is ignored when `format` or `format-jinja` is used.
 - `tagged-metadata` (boolean, default: false): If true, include any tagged metadata discovered as the first part of the metadata segment. Has no effect when `metadata` is set to false. This is ignored when `format` or `format-jinja` is used.
 - `dirty` (boolean, default: false): If true, include a dirty flag in the metadata, indicating whether there are any uncommitted changes. Has no effect when `metadata` is set to false. This is ignored when `format` or `format-jinja` is used.
-- `pattern` (string): This is a regular expression which will be used to find a tag representing a version. When this is unset, Dunamai's default pattern is used.
+- `pattern` (string): This is a regular expression which will be used to find a tag representing a version. When this is unset, [Dunamai's default pattern](https://github.com/mtkennerly/dunamai/blob/master/dunamai/__init__.py#L42-L47) is used, which requires the `v` prefix (for example, `v1.0.0`).
 
   There must be a capture group named `base` with the main part of the version. Optionally, it may contain another two groups named `stage` and `revision` for prereleases, and it may contain a group named `tagged_metadata` to be used with the `tagged-metadata` option. There may also be a group named `epoch` for the PEP 440 concept.
 
