@@ -36,9 +36,14 @@ See [Examples](https://github.com/ninoseki/uv-dynamic-versioning/tree/main/examp
 
 ## Projects Using `uv-dynamic-versioning`
 
-- [microsoft/essex-toolkit](https://github.com/microsoft/essex-toolkit): uses the version source plugin.
-- [modelcontextprotocol/python-sdk](https://github.com/modelcontextprotocol/python-sdk): uses the version source plugin.
-- [pydantic/pydantic-ai](https://github.com/pydantic/pydantic-ai): uses the version source and the metadata hook plugins.
+- Version Source:
+  - [IBM/Agentics](https://github.com/IBM/Agentics)
+  - [microsoft/agent-framework](https://github.com/microsoft/agent-framework)
+  - [modelcontextprotocol/python-sdk](https://github.com/modelcontextprotocol/python-sdk)
+- Metadata Hook:
+  - [mkdocstrings/griffe](https://github.com/mkdocstrings/griffe)
+  - [NVIDIA-NeMo/DataDesigner](https://github.com/NVIDIA-NeMo/DataDesigner)
+  - [pydantic/pydantic-ai](https://github.com/pydantic/pydantic-ai)
 
 And more.
 
