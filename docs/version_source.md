@@ -174,6 +174,7 @@ You may configure the following options under `[tool.uv-dynamic-versioning]`:
   Regardless of the style you choose, the dynamic version is ultimately subject to Hatchling's validation as well, and Hatchling is designed around PEP 440 versions. Hatchling can usually understand SemVer/etc input, but sometimes, Hatchling may reject an otherwise valid version format.
 
 - `latest-tag` (boolean, default: false): If true, then only check the latest tag for a version, rather than looking through all the tags until a suitable one is found to match the `pattern`.
+- `highest-tag` (boolean, default: false): If true, then select the numerically highest version, even if it is not the chronologically latest tag.
 - `bump` (boolean or table, default: false): If enabled, then increment the last part of the version `base` by 1, unless the `stage` is set, in which case increment the `revision` by 1 or set it to a default of 2 if there was no `revision`. Does nothing when on a commit with a version tag. One of:
   - When set to a boolean, true means enable bumping, with other settings as default.
   - When set to a table, these fields are allowed:

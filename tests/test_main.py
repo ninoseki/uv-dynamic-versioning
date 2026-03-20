@@ -1,5 +1,6 @@
 import pytest
 from dunamai import Style, Version
+from git import Repo
 
 from uv_dynamic_versioning import schemas
 from uv_dynamic_versioning.main import get_version
@@ -89,3 +90,21 @@ def test_get_version_with_format_jinja_imports_with_item():
         }
     )
     assert get_version(config)[0] == "4.0"
+
+
+@pytest.mark.usefixtures("semver_tag")
+def test_get_version_with_highest_tag():
+    config = schemas.UvDynamicVersioning(highest_tag=True)
+    assert get_version(config)[0] == "1.0.0"
+
+
+@pytest.mark.usefixtures("semver_tag")
+def test_get_version_with_highest_tag_selects_highest_version(repo: Repo):
+    # Both v1.0.0 (semver_tag) and v0.9.0 point to the same commit.
+    # With highest_tag=True the numerically highest tag (v1.0.0) should win.
+    low_tag = repo.create_tag("v0.9.0")
+    try:
+        version_highest = get_version(schemas.UvDynamicVersioning(highest_tag=True))[0]
+        assert version_highest.startswith("1.0.0")
+    finally:
+        repo.delete_tag(low_tag)

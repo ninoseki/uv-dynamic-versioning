@@ -99,4 +99,17 @@ def test_from_file(semver_tag: TagReference, mock_root: PropertyMock):
     mock_root.return_value = "tests/fixtures/with-from-file/"
 
     version: str = source.get_version_data()["version"]
-    assert version == "1.0.0"
+    assert version == "0.0.0"
+
+
+@pytest.mark.usefixtures("semver_tag")
+def test_with_highest_tag(repo: Repo, mock_root: PropertyMock):
+    try:
+        low_tag = repo.create_tag("v0.9.0")
+        source = DynamicVersionSource(str(repo.working_dir), {})
+        mock_root.return_value = "tests/fixtures/with-highest-tag/"
+
+        version: str = source.get_version_data()["version"]
+        assert version.startswith("1.0.0")
+    finally:
+        repo.delete_tag(low_tag)

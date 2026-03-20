@@ -6,11 +6,11 @@ from functools import partial
 from pathlib import Path
 
 import tomlkit
-from dunamai import _VALID_PEP440, _VALID_PVP, _VALID_SEMVER, Style, Version
-
-from uv_dynamic_versioning.template import render_template
+from dunamai import _VALID_PEP440, _VALID_PVP, _VALID_SEMVER, Style
 
 from . import schemas
+from .monkeypatch import Version
+from .template import render_template
 
 
 def read(root: str):
@@ -95,6 +95,7 @@ def _get_version(config: schemas.UvDynamicVersioning) -> Version:
             pattern=config.pattern,
             pattern_prefix=config.pattern_prefix,
             commit_length=config.commit_length,
+            highest_tag=config.highest_tag,
         )
     except RuntimeError as e:
         if fallback_version := config.fallback_version:
