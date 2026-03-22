@@ -75,3 +75,13 @@ def test_metadata_hook_config_invalid_dependencies():
 def test_metadata_hook_config_invalid_optional_dependencies():
     with pytest.raises(ValueError):
         schemas.MetadataHookConfig.from_dict({"optional_dependencies": "not-a-dict"})
+
+
+def test_uv_dynamic_versioning_highest_tag():
+    config = schemas.UvDynamicVersioning.from_dict({"highest-tag": True})
+    assert config.highest_tag is True
+
+
+def test_uv_dynamic_versioning_invalid_highest_tag():
+    with pytest.raises(ValueError):
+        schemas.UvDynamicVersioning.from_dict({"highest-tag": "not-a-bool"})

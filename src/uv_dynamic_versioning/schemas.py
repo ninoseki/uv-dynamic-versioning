@@ -118,6 +118,7 @@ class UvDynamicVersioning:
     bump: bool | BumpConfig = False
     fallback_version: str | None = None
     from_file: FromFile | None = None
+    highest_tag: bool = False
 
     def _validate_vcs(self):
         if not isinstance(self.vcs, Vcs):
@@ -218,6 +219,10 @@ class UvDynamicVersioning:
         ):
             raise ValueError("fallback-version must be a string or None")
 
+    def _validate_highest_tag(self):
+        if not isinstance(self.highest_tag, bool):
+            raise ValueError("highest-tag must be a boolean")
+
     def __post_init__(self):
         """Validate the UvDynamicVersioning configuration."""
         self._validate_vcs()
@@ -241,6 +246,7 @@ class UvDynamicVersioning:
         self._validate_fallback_version()
         self._validate_commit_prefix()
         self._validate_escape_with()
+        self._validate_highest_tag()
 
     @cached_property
     def bump_config(self) -> BumpConfig:
