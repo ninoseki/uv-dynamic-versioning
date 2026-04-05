@@ -17,7 +17,7 @@ classifiers = [
   "Framework :: Hatch",
 ]
 dependencies = [
-  "dunamai~=1.26",
+  "dunamai~=1.26.1",
   "hatchling~=1.26",
   "jinja2~=3.0",
   "tomlkit~=0.13",

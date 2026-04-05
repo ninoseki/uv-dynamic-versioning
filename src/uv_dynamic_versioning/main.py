@@ -6,10 +6,9 @@ from functools import partial
 from pathlib import Path
 
 import tomlkit
-from dunamai import _VALID_PEP440, _VALID_PVP, _VALID_SEMVER, Style
+from dunamai import _VALID_PEP440, _VALID_PVP, _VALID_SEMVER, Style, Version
 
 from . import schemas
-from .monkeypatch import Version
 from .template import render_template
 
 
