@@ -429,7 +429,7 @@ dev = [
 
 [package.metadata]
 requires-dist = [
-    { name = "dunamai", specifier = "~=1.26" },
+    { name = "dunamai", specifier = "~=1.26.1" },
     { name = "hatchling", specifier = "~=1.26" },
     { name = "jinja2", specifier = "~=3.0" },
     { name = "tomlkit", specifier = "~=0.13" },
