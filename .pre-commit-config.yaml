@@ -11,17 +11,17 @@ repos:
       - id: trailing-whitespace
 
   - repo: https://github.com/astral-sh/uv-pre-commit
-    rev: 0397b68f6f88c024f1d2b355a9818779f6336d16 # 0.11.3
+    rev: 8d582f54b8e4cc5a61a85eeed1f54bbdb1e294fc # 0.12.3
     hooks:
       - id: uv-lock
 
   - repo: https://github.com/ninoseki/uv-sort
-    rev: 5e14070c00cc89e11342127e1bafbe65a1610510 # v0.7.0
+    rev: 5164b1c56d16ad34014d74e8cc4bcc4494664059 # v0.7.1
     hooks:
       - id: uv-sort
 
   - repo: https://github.com/charliermarsh/ruff-pre-commit
-    rev: v0.15.9
+    rev: 7c55798a78262d14b2074abf623d8a992ebb70d4 # v0.16.2
     hooks:
       - id: ruff-check
         args:
