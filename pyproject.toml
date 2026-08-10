@@ -34,6 +34,9 @@ build-backend = "hatchling.build"
 [tool.hatch.version]
 path = "src/uv_dynamic_versioning/__init__.py"
 
+[tool.uv]
+required-version = "==0.12.3"
+
 [dependency-groups]
 dev = [
   "gitpython~=3.1.50",
