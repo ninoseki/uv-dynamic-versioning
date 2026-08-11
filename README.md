@@ -18,7 +18,7 @@ build-backend = "hatchling.build"
 ```
 
 > [!TIP]
-> Pinning build dependencies is recommended. See [Pinning Build Dependencies](./docs/tips.md#pinning-build-dependencies).
+> Pinning build dependencies is recommended. See [Pinning Build Dependencies](https://github.com/ninoseki/uv-dynamic-versioning/blob/main/docs/tips.md#pinning-build-dependencies).
 
 ## Plugins
 
