@@ -1,5 +1,28 @@
 # Tips
 
+## Pinning Build Dependencies
+
+Using version pinning is a good counter measure against so-called supply chain attack.
+uv's [build-constraint-dependencies](https://docs.astral.sh/uv/reference/settings/#build-constraint-dependencies) is for that.
+
+```bash
+$ printf '%s\n' hatchling uv-dynamic-versioning | uv pip compile - --no-annotate --no-header --quiet | jq -R -s 'split("\n") | map(select(length > 0))'
+[
+  ...
+]
+```
+
+Copy and paste the output into `pyproject.toml`'s `tool.uv.build-constraint-dependencies`:
+
+```toml
+[tool.uv]
+build-constraint-dependencies = [
+  ...
+]
+```
+
+`uv build` now uses pinned dependencies.
+
 ## Dependabot
 
 Dependabot may fail if your project uses Depandabot and `uv-dynamic-versioning` together.
