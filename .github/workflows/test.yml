@@ -30,3 +30,43 @@ jobs:
           git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git config --global user.name "github-actions[bot]"
       - run: uv run pytest
+
+  integration-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        with:
+          python-version: 3.14
+      - uses: astral-sh/setup-uv@c771a70e6277c0a99b617c7a806ffedaca235ff9 # v9.0.0
+        with:
+          enable-cache: false
+      - name: Set a dummy tag
+        run: git tag v1.0.0
+      - name: Build the examples with uv-dynamic-versioning (from source)
+        run: |
+          for example in examples/version-source examples/metadata-hook examples/metadata-hook/child-project; do
+            uv venv --directory "$example"
+            uv pip install --directory "$example" hatchling "$GITHUB_WORKSPACE"
+            uv build --directory "$example" --no-build-isolation
+          done
+      - name: Confirm built assets
+        run: |
+          for asset in \
+            examples/version-source/dist/version_source-1.0.0.tar.gz \
+            examples/version-source/dist/version_source-1.0.0-py3-none-any.whl \
+            examples/metadata-hook/dist/metadata_hook-1.0.0.tar.gz \
+            examples/metadata-hook/dist/metadata_hook-1.0.0-py3-none-any.whl \
+            examples/metadata-hook/child-project/dist/child_project-1.0.0.tar.gz \
+            examples/metadata-hook/child-project/dist/child_project-1.0.0-py3-none-any.whl; do
+            test -f "$asset" || { echo "missing: $asset"; exit 1; }
+          done
+      - name: Confirm version source
+        run: grep -Fx 'version = "1.0.0"' examples/version-source/src/example/_version.py
+      - name: Confirm metadata hook
+        run: |
+          unzip -p examples/metadata-hook/dist/metadata_hook-1.0.0-py3-none-any.whl \
+            'metadata_hook-1.0.0.dist-info/METADATA' \
+            | grep -Fx 'Requires-Dist: child-project==1.0.0'
