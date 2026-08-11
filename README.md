@@ -17,6 +17,9 @@ requires = ["hatchling", "uv-dynamic-versioning"]
 build-backend = "hatchling.build"
 ```
 
+> [!TIP]
+> Pinning build dependencies is recommended. See [Pinning Build Dependencies](./docs/tips.md#pinning-build-dependencies).
+
 ## Plugins
 
 This project offers two plugins:
