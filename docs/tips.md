@@ -23,6 +23,10 @@ build-constraint-dependencies = [
 
 `uv build` now uses pinned dependencies.
 
+- Examples:
+  - [modelcontextprotocol/python-sdk/](https://github.com/modelcontextprotocol/python-sdk/blob/a4f4ccd091138771535e17191123f20b30fda68e/pyproject.toml#L37-L54)
+  - [./examples/version-source](https://github.com/ninoseki/uv-dynamic-versioning/blob/main/examples/version-source/pyproject.toml)
+
 ## Dependabot
 
 Dependabot may fail if your project uses Depandabot and `uv-dynamic-versioning` together.
