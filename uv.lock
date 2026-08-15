@@ -2,6 +2,16 @@ version = 1
 revision = 3
 requires-python = ">=3.10, <4.0"
 
+[manifest]
+build-constraints = [
+    { name = "hatchling", specifier = "==1.32.0" },
+    { name = "packaging", specifier = "==26.3" },
+    { name = "pathspec", specifier = "==1.1.1" },
+    { name = "pluggy", specifier = "==1.6.0" },
+    { name = "tomlkit", specifier = "==0.15.1" },
+    { name = "trove-classifiers", specifier = "==2026.6.1.19" },
+]
+
 [[package]]
 name = "colorama"
 version = "0.4.6"
