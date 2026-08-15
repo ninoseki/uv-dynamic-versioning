@@ -33,7 +33,7 @@ uv-dynamic-versioning = "uv_dynamic_versioning.cli:main"
 uv-dynamic-versioning = "uv_dynamic_versioning.hooks"
 
 [build-system]
-requires = ["hatchling==1.31.0"]
+requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [tool.hatch.version]
@@ -41,6 +41,14 @@ path = "src/uv_dynamic_versioning/__init__.py"
 
 [tool.uv]
 required-version = "==0.12.3"
+build-constraint-dependencies = [
+  "hatchling==1.32.0",
+  "packaging==26.3",
+  "pathspec==1.1.1",
+  "pluggy==1.6.0",
+  "tomlkit==0.15.1",
+  "trove-classifiers==2026.6.1.19",
+]
 
 [dependency-groups]
 dev = [
