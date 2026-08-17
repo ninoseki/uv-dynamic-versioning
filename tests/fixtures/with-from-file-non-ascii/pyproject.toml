@@ -1,0 +1,15 @@
+[project]
+name = "dummy"
+dynamic = ["version"]
+description = ""
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = []
+
+[build-system]
+requires = ["hatchling", "uv-dynamic-versioning"]
+build-backend = "hatchling.build"
+
+[tool.uv-dynamic-versioning.from-file]
+source = "tests/fixtures/with-from-file-non-ascii/_version.py"
+pattern = "^__version__ = \"(.+)\"$"

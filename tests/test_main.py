@@ -1,3 +1,8 @@
+import os
+import subprocess
+import sys
+from pathlib import Path
+
 import pytest
 from dunamai import Style, Version
 from git import Repo
@@ -108,3 +113,61 @@ def test_get_version_with_highest_tag_selects_highest_version(repo: Repo):
         assert version_highest.startswith("1.0.0")
     finally:
         repo.delete_tag(low_tag)
+
+
+# A locale whose encoding cannot represent the non-ASCII fixtures, with both routes
+# back to UTF-8 (PEP 540 UTF-8 mode, PEP 538 C locale coercion) disabled. Used to run
+# a child interpreter, because the encoding `open` defaults to is fixed at start-up.
+NON_UTF8_LOCALE_ENV = {
+    **os.environ,
+    "LC_ALL": "C",
+    "PYTHONUTF8": "0",
+    "PYTHONCOERCECLOCALE": "0",
+    # Only affects stdio, so the child can hand the decoded text back intact.
+    "PYTHONIOENCODING": "utf-8",
+}
+
+
+def test_read_decodes_utf8_regardless_of_locale():
+    # `pyproject.toml` is a TOML document, which is UTF-8 by spec, so `read` must not
+    # decode it with the locale encoding: on a non-UTF-8 locale that either raises
+    # (`UnicodeDecodeError` under `LC_ALL=C` or a Chinese Windows locale) or silently
+    # mojibakes the document.
+    root = "tests/fixtures/with-non-ascii"
+    expected = (Path(root) / "pyproject.toml").read_text(encoding="utf-8")
+    result = subprocess.run(
+        [
+            sys.executable,
+            "-c",
+            "import sys; from uv_dynamic_versioning.main import read; "
+            f"sys.stdout.write(read({root!r}))",
+        ],
+        capture_output=True,
+        text=True,
+        encoding="utf-8",
+        env=NON_UTF8_LOCALE_ENV,
+    )
+    assert result.returncode == 0, result.stderr
+    assert result.stdout == expected
+
+
+def test_from_file_decodes_utf8_regardless_of_locale():
+    # Same as above for the `from-file` source: with a `pattern` it is meant to be
+    # pointed at a source file, whose surrounding content can be non-ASCII.
+    root = "tests/fixtures/with-from-file-non-ascii"
+    result = subprocess.run(
+        [
+            sys.executable,
+            "-c",
+            "import sys; from uv_dynamic_versioning.base import BasePlugin; "
+            "from uv_dynamic_versioning.main import get_version; "
+            f"plugin = BasePlugin(); plugin.root = {root!r}; "
+            "sys.stdout.write(get_version(plugin.project_config)[0])",
+        ],
+        capture_output=True,
+        text=True,
+        encoding="utf-8",
+        env=NON_UTF8_LOCALE_ENV,
+    )
+    assert result.returncode == 0, result.stderr
+    assert result.stdout == "0.0.0"
