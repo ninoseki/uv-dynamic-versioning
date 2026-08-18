@@ -14,7 +14,8 @@ from .template import render_template
 
 def read(root: str):
     pyproject = Path(root) / "pyproject.toml"
-    return pyproject.read_text()
+    # TOML documents are UTF-8 by spec, so don't let the locale encoding decide.
+    return pyproject.read_text(encoding="utf-8")
 
 
 def parse(text: str):
@@ -51,7 +52,9 @@ def _get_from_file_version(config: schemas.UvDynamicVersioning) -> str | None:
         return None
 
     source, pattern = (config.from_file.source, config.from_file.pattern)
-    content = Path(source).read_text().strip()
+    # `pattern` is meant for source files (e.g. `__init__.py`), whose non-version
+    # content can be non-ASCII, so don't let the locale encoding decide either.
+    content = Path(source).read_text(encoding="utf-8").strip()
 
     if pattern is None:
         return content

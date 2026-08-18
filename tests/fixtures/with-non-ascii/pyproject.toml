@@ -1,0 +1,15 @@
+[project]
+name = "dummy"
+dynamic = ["version"]
+# A non-ASCII comment — em dash (U+2014), as found in real pyproject.toml files.
+description = "パッケージ"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = []
+
+[build-system]
+requires = ["hatchling", "uv-dynamic-versioning"]
+build-backend = "hatchling.build"
+
+[tool.uv-dynamic-versioning]
+style = "pep440"

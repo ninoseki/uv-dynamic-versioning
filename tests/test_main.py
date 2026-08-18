@@ -1,9 +1,12 @@
+from pathlib import Path
+
 import pytest
 from dunamai import Style, Version
 from git import Repo
 
 from uv_dynamic_versioning import schemas
-from uv_dynamic_versioning.main import get_version
+from uv_dynamic_versioning.base import BasePlugin
+from uv_dynamic_versioning.main import get_version, read
 
 
 @pytest.mark.usefixtures("semver_tag")
@@ -108,3 +111,33 @@ def test_get_version_with_highest_tag_selects_highest_version(repo: Repo):
         assert version_highest.startswith("1.0.0")
     finally:
         repo.delete_tag(low_tag)
+
+
+@pytest.fixture
+def non_utf8_locale(monkeypatch: pytest.MonkeyPatch):
+    read_text = Path.read_text
+
+    def patched(self: Path, encoding: str | None = None, errors=None, **kwargs):
+        return read_text(self, encoding=encoding or "ascii", errors=errors, **kwargs)
+
+    monkeypatch.setattr(Path, "read_text", patched)
+
+
+@pytest.mark.usefixtures("non_utf8_locale")
+def test_read_decodes_utf8_regardless_of_locale():
+    # `pyproject.toml` is a TOML document, which is UTF-8 by spec, so `read` must not
+    # decode it with the locale encoding: on a non-UTF-8 locale that either raises
+    # (`UnicodeDecodeError` under `LC_ALL=C` or a Chinese Windows locale) or silently
+    # mojibakes the document.
+    root = "tests/fixtures/with-non-ascii"
+    expected = (Path(root) / "pyproject.toml").read_text(encoding="utf-8")
+    assert read(root) == expected
+
+
+@pytest.mark.usefixtures("non_utf8_locale")
+def test_from_file_decodes_utf8_regardless_of_locale():
+    # Same as above for the `from-file` source: with a `pattern` it is meant to be
+    # pointed at a source file, whose surrounding content can be non-ASCII.
+    plugin = BasePlugin()
+    plugin.root = "tests/fixtures/with-from-file-non-ascii"  # type: ignore[attr-defined]
+    assert get_version(plugin.project_config)[0] == "0.0.0"
