@@ -40,12 +40,12 @@ See [Examples](https://github.com/ninoseki/uv-dynamic-versioning/tree/main/examp
 ## Projects Using `uv-dynamic-versioning`
 
 - Version Source:
-  - [IBM/Agentics](https://github.com/IBM/Agentics)
-  - [microsoft/agent-framework](https://github.com/microsoft/agent-framework)
+  - [databricks-solutions/microbricks](https://github.com/databricks-solutions/microbricks)
   - [modelcontextprotocol/python-sdk](https://github.com/modelcontextprotocol/python-sdk)
+  - [NVIDIA-Omniverse/usd-content-agents](https://github.com/NVIDIA-Omniverse/usd-content-agents)
 - Metadata Hook:
   - [mkdocstrings/griffe](https://github.com/mkdocstrings/griffe)
-  - [NVIDIA-NeMo/DataDesigner](https://github.com/NVIDIA-NeMo/DataDesigner)
+  - [PrefectHQ/fastmcp/](https://github.com/PrefectHQ/fastmcp/)
   - [pydantic/pydantic-ai](https://github.com/pydantic/pydantic-ai)
 
 And more.
