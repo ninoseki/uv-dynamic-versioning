@@ -3,21 +3,21 @@ name = "uv-dynamic-versioning"
 dynamic = ["version"]
 description = "Dynamic versioning based on VCS tags for uv/hatch project"
 readme = "README.md"
-requires-python = ">=3.10,<4.0"
+requires-python = ">=3.11,<4.0"
 license-files = ["LICENSE"]
 keywords = ["uv", "hatch"]
 classifiers = [
   "Programming Language :: Python",
-  "Programming Language :: Python :: 3.10",
   "Programming Language :: Python :: 3.11",
   "Programming Language :: Python :: 3.12",
   "Programming Language :: Python :: 3.13",
   "Programming Language :: Python :: 3.14",
+  "Programming Language :: Python :: 3.15",
   "Framework :: Hatch",
 ]
 dependencies = [
   "dunamai~=1.26.1",
-  "hatchling~=1.28",
+  "hatchling~=1.32.4",
   "jinja2~=3.0",
   "tomlkit~=0.13",
 ]
@@ -40,7 +40,7 @@ build-backend = "hatchling.build"
 path = "src/uv_dynamic_versioning/__init__.py"
 
 [tool.uv]
-required-version = "==0.12.3"
+required-version = "~=0.13"
 build-constraint-dependencies = [
   "hatchling==1.32.0",
   "packaging==26.3",
